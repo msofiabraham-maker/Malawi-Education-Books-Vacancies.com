@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - MEBV</title>
+    <meta name="description" content="Administrator dashboard for managing books, videos, Python lessons, vacancies, services, blog posts, ads, users, payments, and audit logs." />
+    <meta name="theme-color" content="#0A1931" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" type="image/png" href="assets/LOGO.png">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body { background: #081827; color: #e7ecf4; }
+        .admin-shell { display: grid; grid-template-columns: 280px 1fr; gap: 24px; align-items: stretch; }
+        .admin-sidebar { background: rgba(8, 24, 47, 0.96); border: 1px solid rgba(255,255,255,0.06); border-radius: 28px; position: sticky; top: 100px; padding: 24px; height: calc(100vh - 140px); overflow: auto; }
+        .admin-sidebar .sidebar-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+        .admin-sidebar .sidebar-brand img { width: 38px; height: 38px; border-radius: 12px; }
+        .admin-sidebar h2 { font-size: 1.1rem; margin: 0 0 28px; color: #ffffff; }
+        .sidebar-link { display: block; width: 100%; text-align: left; padding: 14px 16px; margin-bottom: 10px; border-radius: 16px; color: #cfd8e6; background: transparent; border: none; cursor: pointer; font-size: 0.95rem; transition: background 180ms ease, color 180ms ease; }
+        .sidebar-link.active, .sidebar-link:hover { background: rgba(22, 66, 126, 0.22); color: #ffffff; }
+        .admin-main { display: flex; flex-direction: column; gap: 24px; }
+        .admin-page-header { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 18px; align-items: flex-end; }
+        .admin-page-header h1 { margin: 0; font-size: 2rem; }
+        .admin-metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; }
+        .admin-card { background: rgba(11, 24, 48, 0.95); border: 1px solid rgba(255,255,255,0.06); border-radius: 24px; padding: 22px; box-shadow: 0 20px 50px rgba(2, 10, 25, 0.15); }
+        .admin-card h3 { margin: 0 0 10px; font-size: 1rem; color: #a3b4d1; }
+        .admin-card p { margin: 0; font-size: 2rem; color: #7dc6ff; }
+        .admin-title { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+        .admin-title p { margin: 0; color: #a9b7cf; max-width: 760px; }
+        .admin-toolbar { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; }
+        .admin-toolbar .toolbar-left { display: flex; gap: 12px; flex-wrap: wrap; }
+        .admin-section { display: none; gap: 20px; }
+        .admin-section.active { display: block; }
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 18px; }
+        .admin-table th, .admin-table td { padding: 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.08); text-align: left; font-size: 0.95rem; }
+        .admin-table th { color: #9fb4d9; font-weight: 600; }
+        .admin-table tr:hover { background: rgba(255,255,255,0.04); }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: none; border-radius: 16px; padding: 10px 18px; font-size: 0.95rem; cursor: pointer; transition: transform 120ms ease; }
+        .btn:hover { transform: translateY(-1px); }
+        .btn-primary { background: #2855ff; color: #fff; }
+        .btn-secondary { background: #1d2f55; color: #f1f4fb; }
+        .btn-outline { background: transparent; color: #cfd8e6; border: 1px solid rgba(255,255,255,0.18); }
+        .btn-danger { background: #d8544b; color: #fff; }
+        .btn-success { background: #2dca8c; color: #fff; }
+        .form-control { width: 100%; min-width: 0; padding: 10px 14px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.05); color: #eef3ff; outline: none; }
+        .form-control::placeholder { color: rgba(231,236,244,0.55); }
+        .form-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+        .form-row.full { grid-template-columns: 1fr; }
+        .form-label { display: block; margin-bottom: 10px; font-size: 0.92rem; color: #b7c4dc; }
+        .form-note { margin-top: 6px; color: #8da1c1; font-size: 0.85rem; }
+        .admin-modal, .admin-confirm { position: fixed; inset: 0; background: rgba(2, 10, 25, 0.8); display: grid; place-items: center; z-index: 1000; padding: 18px; }
+        .admin-modal.hidden, .admin-confirm.hidden { display: none; }
+        .admin-modal-card, .admin-confirm-card { width: min(100%, 760px); max-height: calc(100vh - 80px); overflow-y: auto; background: rgba(7, 18, 37, 0.98); border: 1px solid rgba(255,255,255,0.08); border-radius: 28px; padding: 26px; box-shadow: 0 24px 70px rgba(0,0,0,0.35); }
+        .admin-modal-card h2 { margin-top: 0; margin-bottom: 16px; }
+        .modal-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: flex-end; margin-top: 22px; }
+        .admin-toast { position: fixed; bottom: 24px; right: 24px; min-width: 260px; background: rgba(15,27,49,0.98); color: #eef5ff; padding: 14px 18px; border-radius: 18px; box-shadow: 0 18px 40px rgba(0,0,0,0.28); z-index: 1200; opacity: 0; transform: translateY(8px); pointer-events: none; transition: opacity 160ms ease, transform 160ms ease; }
+        .admin-toast.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .admin-loading { position: fixed; inset: 0; background: rgba(2, 10, 25, 0.55); display: grid; place-items: center; z-index: 1100; color: #fff; font-size: 1.05rem; }
+        .admin-loading.hidden { display: none; }
+        .status-chip { border-radius: 999px; padding: 6px 12px; font-size: 0.82rem; color: #fff; display: inline-flex; align-items: center; gap: 6px; }
+        .status-pending { background: #475ad7; }
+        .status-approved { background: #2da77a; }
+        .status-rejected { background: #c84d55; }
+        .status-active { background: #2da77a; }
+        .status-inactive { background: #6f7fa4; }
+        .toolbar-search { width: min(420px, 100%); }
+        .admin-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; align-items: center; }
+        .admin-quick-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+        .admin-activity-list { display: grid; gap: 14px; }
+        @media (max-width: 1024px) {
+            .admin-shell { grid-template-columns: 1fr; }
+            .admin-sidebar { position: static; height: auto; top: auto; }
+            .admin-page-header { align-items: stretch; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 640px) {
+            .sidebar-link { font-size: 0.9rem; padding: 12px 14px; }
+            .admin-title h1 { font-size: 1.75rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="nav-brand">
+                <img src="assets/LOGO.png" alt="MEBV Logo" class="nav-logo">
+                <span class="nav-logo-text">MEBV Admin</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="admin.html" class="nav-link active">Dashboard</a></li>
+                <li><a href="profile.html" class="nav-link">Profile</a></li>
+                <li><a href="contact.html" class="nav-link">Support</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="btn btn-outline" onclick="AuthManager.signOut()">Sign Out</button>
+            </div>
+        </div>
+    </nav>
+
+    <main style="max-width:1600px; margin:0 auto; padding:120px 24px 80px;">
+        <div class="admin-shell">
+            <aside class="admin-sidebar">
+                <div class="sidebar-brand">
+                    <img src="assets/LOGO.png" alt="MEBV Logo">
+                    <div>
+                        <h2>MEBV CMS</h2>
+                        <p style="margin:0; color:#8da1c3; font-size:0.95rem;">Content Management System</p>
+                    </div>
+                </div>
+                <button class="sidebar-link active" data-section="dashboard">Dashboard</button>
+                <button class="sidebar-link" data-section="books">Books</button>
+                <button class="sidebar-link" data-section="videos">Videos</button>
+                <button class="sidebar-link" data-section="lessons">Python Lessons</button>
+                <button class="sidebar-link" data-section="vacancies">Vacancies</button>
+                <button class="sidebar-link" data-section="services">Services</button>
+                <button class="sidebar-link" data-section="blogs">Blog Posts</button>
+                <button class="sidebar-link" data-section="ads">Advertisements</button>
+                <button class="sidebar-link" data-section="users">Users</button>
+                <button class="sidebar-link" data-section="payments">Payments</button>
+                <button class="sidebar-link" data-section="audit">Audit Logs</button>
+                <div style="margin-top: 28px;">
+                    <button class="btn btn-secondary" onclick="AuthManager.signOut()">Sign Out</button>
+                </div>
+            </aside>
+
+            <section class="admin-main">
+                <div class="admin-page-header">
+                    <div class="admin-title">
+                        <div>
+                            <h1 id="admin-page-title">Dashboard</h1>
+                            <p id="admin-page-subtitle">A complete admin CMS for managing books, videos, lessons, vacancies, services, blogs, ads, users, payments, and audit data.</p>
+                        </div>
+                    </div>
+                    <div class="admin-toolbar">
+                        <div class="toolbar-left">
+                            <button id="admin-add-button" class="btn btn-primary">Add New Item</button>
+                        </div>
+                        <div class="admin-filters">
+                            <input id="admin-search" type="search" class="form-control toolbar-search" placeholder="Search current section...">
+                            <select id="admin-section-filter" class="form-control hidden"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <section id="dashboard-section" class="admin-section active">
+                    <div class="admin-metric-grid">
+                        <div class="admin-card"><h3>Total Users</h3><p id="metric-users">0</p></div>
+                        <div class="admin-card"><h3>Total Downloads</h3><p id="metric-downloads">0</p></div>
+                        <div class="admin-card"><h3>Total Books</h3><p id="metric-books">0</p></div>
+                        <div class="admin-card"><h3>Total Videos</h3><p id="metric-videos">0</p></div>
+                        <div class="admin-card"><h3>Total Vacancies</h3><p id="metric-vacancies">0</p></div>
+                        <div class="admin-card"><h3>Total Services</h3><p id="metric-services">0</p></div>
+                        <div class="admin-card"><h3>Total Revenue</h3><p id="metric-revenue">MWK 0</p></div>
+                        <div class="admin-card"><h3>Daily Activity</h3><p id="metric-activity">0 events</p></div>
+                    </div>
+                    <div class="admin-card" style="margin-top: 12px;">
+                        <h3>Recent Activity</h3>
+                        <div id="dashboard-activity" class="admin-activity-list"></div>
+                    </div>
+                    <div class="admin-card" style="margin-top: 12px;">
+                        <h3>Quick Actions</h3>
+                        <div class="admin-quick-actions">
+                            <button class="btn btn-primary" data-action="books">Add Book</button>
+                            <button class="btn btn-primary" data-action="videos">Add Video</button>
+                            <button class="btn btn-primary" data-action="lessons">Add Lesson</button>
+                            <button class="btn btn-primary" data-action="vacancies">Add Vacancy</button>
+                            <button class="btn btn-primary" data-action="services">Add Service</button>
+                            <button class="btn btn-primary" data-action="blogs">Add Blog Post</button>
+                            <button class="btn btn-primary" data-action="ads">Add Advertisement</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="books-section" class="admin-section">
+                    <div class="admin-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap: wrap;">
+                            <div><h2>Books Management</h2><p class="form-note">Create, edit, delete books, upload PDFs and cover images, and control featured status.</p></div>
+                            <button class="btn btn-primary" onclick="AdminPanel.openModal('books')">Add Book</button>
+                        </div>
+                        <div class="admin-filters" style="margin-top:18px;">
+                            <input id="books-search" class="form-control" placeholder="Search books by title, author, category..." type="search">
+                            <select id="books-filter" class="form-control"><option value="">All Categories</option><option>MSCE Books</option><option>JCE Books</option><option>Primary Books</option><option>Nursing Books</option><option>Novels</option><option>Past Papers</option><option>Others</option></select>
+                        </div>
+                        <div id="books-table-container"></div>
+                    </div>
+                </section>
+
+                <section id="videos-section" class="admin-section">
+                    <div class="admin-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap: wrap;">
+                            <div><h2>Videos Management</h2><p class="form-note">Add, edit, delete video lessons and manage YouTube embeds, thumbnails, categories, and descriptions.</p></div>
+                            <button class="btn btn-primary" onclick="AdminPanel.openModal('videos')">Add Video</button>
+                        </div>
+                        <div class="admin-filters" style="margin-top:18px;">
+                            <input id="videos-search" class="form-control" placeholder="Search videos by title, category..." type="search">
+                            <select id="videos-filter" class="form-control"><option value="">All Categories</option></select>
+                        </div>
+                        <div id="videos-table-container"></div>
+                    </div>
+                </section>
+
+                <section id="lessons-section" class="admin-section">
+                    <div class="admin-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap: wrap;">
+                            <div><h2>Python Lessons Management</h2><p class="form-note">Add lessons, manage video references, notes, quizzes, premium access, and passing score requirements.</p></div>
+                            <button class="btn btn-primary" onclick="AdminPanel.openModal('lessons')">Add Lesson</button>
+                        </div>
+                        <div class="admin-filters" style="margin-top:18px;">
+                            <input id="lessons-search" class="form-control" placeholder="Search lessons by title or level..." type="search">
+                            <select id="lessons-filter" class="form-control"><option value="">All Levels</option><option>BEGINNER</option><option>INTERMEDIATE</option><option>ADVANCED</option></select>
+                        </div>
+                        <div id="lessons-table-container"></div>
+                    </div>
+                </section>
+
+                <section id="vacancies-section" class="admin-section">
+                    <div class="admin-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap: wrap;">
+                            <div><h2>Vacancies Management</h2><p class="form-note">Post, edit and remove job opportunities with company, location, deadline, application link and featured status.</p></div>
+                            <button class="btn btn-primary" onclick="AdminPanel.openModal('vacancies')">Add Vacancy</button>
+                        </div>
+                        <div class="admin-filters" style="margin-top:18px;">
+                            <input id="vacancies-search" class="form-control" placeholder="Search vacancies by title, company, category..." type="search">
+                            <select id="vacancies-filter" class="form-control"><option value="">All Categories</option><option>Government Jobs</option><option>NGO Jobs</option><option>Teaching Jobs</option><option>Nursing Jobs</option><option>Health Jobs</option><option>Banking Jobs</option><option>Engineering Jobs</option><option>IT Jobs</option><option>Scholarships</option><option>Internships</option><option>Attachments</option><option>Tenders</option><option>Others</option></select>
+                        </div>
+                        <div id="vacancies-table-container"></div>
+                    </div>
+                </section>
+
+                <section id="services-section" class="admin-section">
+                    <div class="admin-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap: wrap;">
+                            <div><h2>Services Management</h2><p class="form-note">Add, edit, delete service listings with pricing, category, and featured status.</p></div>
+                            <button class="btn btn-primary" onclick="AdminPanel.openModal('services')">Add Service</button>
+                        </div>
+                        <div class="admin-filters" style="margin-top:18px;">
+                            <input id="services-search" class="form-control" placeholder="Search services by name or category..." type="search">
+                            <select id="services-filter" class="form-control"><option value="">All Categories</option></select>
+                        </div>
+                        <div id="services-table-container"></div>
+                    </div>
+                </section>
+
+                <section id="blogs-section" class="admin-section">
+                    <div class="admin-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap: wrap;">
+                            <div><h2>Blog Management</h2><p class="form-note">Publish, edit and remove blog posts with content, category, and featured imagery.</p></div>
+                            <button class="btn btn-primary" onclick="AdminPanel.openModal('blogs')">Add Blog Post</button>
+                        </div>
+                        <div class="admin-filters" style="margin-top:18px;">
+                            <input id="blogs-search" class="form-control" placeholder="Search blog posts by title or category..." type="search">
+                            <select id="blogs-filter" class="form-control"><option value="">All Categories</option><option>Updates</option><option>Learning</option><option>Careers</option><option>Resources</option><option>General</option></select>
+                        </div>
+                        <div id="blogs-table-container"></div>
+                    </div>
+                </section>
+
+                <section id="ads-section" class="admin-section">
+                    <div class="admin-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap: wrap;">
+                            <div><h2>Advertisement Management</h2><p class="form-note">Manage banners, destination links, scheduling and active state for campaigns.</p></div>
+                            <button class="btn btn-primary" onclick="AdminPanel.openModal('ads')">Add Advertisement</button>
+                        </div>
+                        <div class="admin-filters" style="margin-top:18px;">
+                            <input id="ads-search" class="form-control" placeholder="Search ads by title or status..." type="search">
+                            <select id="ads-filter" class="form-control"><option value="">All Status</option><option value="true">Active</option><option value="false">Inactive</option></select>
+                        </div>
+                        <div id="ads-table-container"></div>
+                    </div>
+                </section>
+
+                <section id="users-section" class="admin-section">
+                    <div class="admin-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap: wrap;">
+                            <div><h2>User Management</h2><p class="form-note">Search users, filter roles, change roles, suspend and reactivate accounts.</p></div>
+                        </div>
+                        <div class="admin-filters" style="margin-top:18px;">
+                            <input id="users-search" class="form-control" placeholder="Search users by name, role or phone..." type="search">
+                            <select id="users-filter" class="form-control"><option value="">All Roles</option><option>super_admin</option><option>admin</option><option>content_manager</option><option>moderator</option><option>registered_user</option><option>guest</option></select>
+                        </div>
+                        <div id="users-table-container"></div>
+                    </div>
+                </section>
+
+                <section id="payments-section" class="admin-section">
+                    <div class="admin-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap: wrap;">
+                            <div><h2>Payment Management</h2><p class="form-note">Review user payment proofs, approve or reject payment submissions, and add notes.</p></div>
+                        </div>
+                        <div class="admin-filters" style="margin-top:18px;">
+                            <input id="payments-search" class="form-control" placeholder="Search payments by user or status..." type="search">
+                            <select id="payments-filter" class="form-control"><option value="">All Status</option><option>pending</option><option>approved</option><option>rejected</option></select>
+                        </div>
+                        <div id="payments-table-container"></div>
+                    </div>
+                </section>
+
+                <section id="audit-section" class="admin-section">
+                    <div class="admin-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap: wrap;">
+                            <div><h2>Audit Logs</h2><p class="form-note">View administrator actions with date and user filters for compliance and change tracking.</p></div>
+                        </div>
+                        <div class="admin-filters" style="margin-top:18px;">
+                            <input id="audit-search" class="form-control" placeholder="Filter audit logs by user id or action..." type="search">
+                            <input id="audit-date-filter" class="form-control" type="date">
+                        </div>
+                        <div id="audit-table-container"></div>
+                    </div>
+                </section>
+            </section>
+        </div>
+    </main>
+
+    <div id="admin-modal" class="admin-modal hidden" aria-hidden="true">
+        <div class="admin-modal-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:18px;">
+                <h2 id="admin-modal-title">Manage Item</h2>
+                <button class="btn btn-outline" id="admin-modal-close">Close</button>
+            </div>
+            <form id="admin-modal-form"></form>
+        </div>
+    </div>
+
+    <div id="admin-confirm-modal" class="admin-confirm hidden" aria-hidden="true">
+        <div class="admin-confirm-card">
+            <h2 id="admin-confirm-title">Confirm Action</h2>
+            <p id="admin-confirm-message">Are you sure?</p>
+            <div class="modal-actions">
+                <button class="btn btn-outline" id="admin-confirm-cancel">Cancel</button>
+                <button class="btn btn-danger" id="admin-confirm-yes">Yes, continue</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-toast" class="admin-toast"></div>
+    <div id="admin-loading" class="admin-loading hidden">Loading admin CMS...</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await AdminPanel.init();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,719 @@
+/* ============================================================================
+   MALAWI EDUCATION BOOKS AND VACANCIES (MEBV) - PREMIUM BRAND STYLESHEET
+   ============================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+    /* Brand Colors */
+    --color-primary: #0A1931;       /* Deep Blue */
+    --color-primary-light: #15305B;
+    --color-secondary: #DFB15B;     /* Warm Gold Accent */
+    --color-secondary-hover: #C59A44;
+    --color-accent: #FFFFFF;
+    --color-bg-light: #F5F7FA;      /* Elegant Light Gray */
+    --color-text-dark: #1E293B;
+    --color-text-muted: #64748B;
+    --color-success: #10B981;
+    --color-danger: #EF4444;
+    --color-warning: #F59E0B;
+    --color-border: rgba(226, 232, 240, 0.8);
+    
+    /* Glassmorphic Properties */
+    --glass-bg: rgba(255, 255, 255, 0.65);
+    --glass-bg-dark: rgba(10, 25, 49, 0.85);
+    --glass-border: rgba(255, 255, 255, 0.4);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
+    --glass-blur: blur(12px);
+
+    /* Fonts & Radii */
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-round: 50%;
+    
+    /* Transitions */
+    --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================
+   1. RESET & SYSTEM DEFAULTS
+   ========================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    background-color: var(--color-bg-light);
+    color: var(--color-text-dark);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: var(--color-primary);
+    line-height: 1.25;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: var(--transition-smooth);
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+button, input, select, textarea {
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    border: none;
+}
+
+/* ==========================================
+   2. KEYFRAME ANIMATIONS
+   ========================================== */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+@keyframes scaleUp {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* ==========================================
+   3. SPLASH SCREEN (LAUNCH LOADER)
+   ========================================== */
+.splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle at center, var(--color-primary-light), var(--color-primary));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    color: var(--color-accent);
+    transition: opacity 0.8s ease-in-out, visibility 0.8s;
+}
+
+.splash-logo {
+    width: 130px;
+    height: 130px;
+    object-fit: contain;
+    animation: float 3s ease-in-out infinite;
+}
+
+.splash-title {
+    margin-top: 24px;
+    font-size: 1.8rem;
+    font-family: var(--font-heading);
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    text-align: center;
+    color: var(--color-accent);
+}
+
+.splash-subtitle {
+    font-size: 0.95rem;
+    color: var(--color-secondary);
+    margin-top: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.splash-progress-bar {
+    width: 180px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    margin-top: 32px;
+    position: relative;
+    overflow: hidden;
+}
+
+.splash-progress-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--color-secondary), #FFF);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+/* ==========================================
+   4. GLASSMORPHIC HEADER & NAVIGATION
+   ========================================== */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: var(--glass-bg);
+    border-bottom: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: var(--glass-shadow);
+    transition: var(--transition-smooth);
+}
+
+.navbar-scrolled {
+    background: rgba(10, 25, 49, 0.92);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.navbar-scrolled .nav-link {
+    color: var(--color-accent);
+}
+
+.navbar-scrolled .nav-logo-text {
+    color: var(--color-accent);
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 16px 24px;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-logo {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+}
+
+.nav-logo-text {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    letter-spacing: -0.5px;
+    transition: var(--transition-smooth);
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    list-style: none;
+}
+
+.nav-link {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    position: relative;
+    padding: 6px 0;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background: var(--color-secondary);
+    transition: var(--transition-smooth);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    width: 100%;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* ==========================================
+   5. PREMIUM GLASS CARDS & UI ELEMENTS
+   ========================================== */
+.glass-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-radius: var(--radius-md);
+    box-shadow: var(--glass-shadow);
+    transition: var(--transition-smooth);
+    overflow: hidden;
+}
+
+.glass-card:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 20px 40px rgba(10, 25, 49, 0.08);
+    border-color: rgba(223, 177, 91, 0.4);
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 28px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+    color: var(--color-accent);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(10, 25, 49, 0.15);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, var(--color-secondary), var(--color-secondary-hover));
+    color: var(--color-primary);
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(135deg, var(--color-secondary-hover), var(--color-secondary));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(223, 177, 91, 0.25);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--color-primary);
+    color: var(--color-primary);
+}
+
+.btn-outline:hover {
+    background: var(--color-primary);
+    color: var(--color-accent);
+}
+
+/* ==========================================
+   6. PREMIUM GRADIENT HERO BANNER
+   ========================================== */
+.hero-section {
+    position: relative;
+    padding: 180px 24px 100px 24px;
+    background: radial-gradient(circle at top right, rgba(223, 177, 91, 0.08), transparent 45%),
+                radial-gradient(circle at bottom left, rgba(10, 25, 49, 0.04), transparent 50%),
+                var(--color-bg-light);
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+}
+
+.hero-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.hero-content {
+    animation: slideUp 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(223, 177, 91, 0.15);
+    color: var(--color-secondary-hover);
+    border-radius: var(--radius-round);
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 24px;
+    line-height: 1.15;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-title span {
+    background: linear-gradient(135deg, var(--color-secondary), var(--color-secondary-hover));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-description {
+    font-size: 1.15rem;
+    color: var(--color-text-muted);
+    margin-bottom: 40px;
+    max-width: 620px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.hero-image-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 1.2s ease-out;
+}
+
+.hero-image-bg {
+    position: absolute;
+    width: 110%;
+    height: 110%;
+    background: radial-gradient(circle, rgba(223, 177, 91, 0.1) 0%, transparent 70%);
+    z-index: 1;
+}
+
+.hero-image {
+    width: 100%;
+    max-width: 500px;
+    z-index: 2;
+    animation: float 6s ease-in-out infinite;
+    filter: drop-shadow(0 20px 40px rgba(10, 25, 49, 0.15));
+}
+
+/* ==========================================
+   7. INTERACTIVE ADVERTISEMENTS
+   ========================================== */
+.ad-banner-section {
+    max-width: 1400px;
+    margin: 40px auto;
+    padding: 0 24px;
+}
+
+.ad-wrapper {
+    width: 100%;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 12px 30px rgba(10, 25, 49, 0.12);
+    display: flex;
+    align-items: center;
+    min-height: 120px;
+    padding: 24px 40px;
+}
+
+.ad-label {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--color-accent);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+}
+
+/* ==========================================
+   8. SKELETON LOADERS & LOADING STATES
+   ========================================== */
+.skeleton {
+    background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 50%, #F1F5F9 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: var(--radius-sm);
+}
+
+.skeleton-text {
+    height: 16px;
+    margin-bottom: 12px;
+}
+
+.skeleton-text.title {
+    height: 24px;
+    width: 60%;
+}
+
+.skeleton-image {
+    height: 200px;
+    width: 100%;
+}
+
+/* ==========================================
+   9. FORMS & INPUT LAYOUTS
+   ========================================== */
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 8px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 14px 20px;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-dark);
+    font-size: 0.95rem;
+    transition: var(--transition-smooth);
+}
+
+.form-control:focus {
+    background: #FFF;
+    border-color: var(--color-secondary);
+    box-shadow: 0 0 0 4px rgba(223, 177, 91, 0.15);
+}
+
+/* ==========================================
+   10. FOOTER & COMPLIANCE ARCHITECTURE
+   ========================================== */
+.footer {
+    background: var(--color-primary);
+    color: var(--color-accent);
+    padding: 80px 24px 30px 24px;
+    margin-top: 100px;
+    position: relative;
+    overflow: hidden;
+}
+
+.footer-gradient-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 80% 80%, rgba(223, 177, 91, 0.05), transparent 60%);
+    pointer-events: none;
+}
+
+.footer-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr 0.8fr 1.2fr;
+    gap: 48px;
+    position: relative;
+    z-index: 2;
+}
+
+.footer-brand-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.footer-logo-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.footer-logo {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+}
+
+.footer-brand-name {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 1.4rem;
+    color: var(--color-accent);
+}
+
+.footer-desc {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+}
+
+.footer-heading {
+    color: var(--color-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.footer-link {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.95rem;
+    display: inline-block;
+}
+
+.footer-link:hover {
+    color: var(--color-secondary);
+    transform: translateX(4px);
+}
+
+.footer-newsletter-box {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.footer-newsletter-desc {
+    color: rgba(255, 255, 255, 0.70);
+    font-size: 0.95rem;
+}
+
+.newsletter-form {
+    display: flex;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.newsletter-input {
+    flex-grow: 1;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #FFF;
+    border: none;
+}
+
+.newsletter-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.newsletter-btn {
+    background: var(--color-secondary);
+    color: var(--color-primary);
+    font-weight: 700;
+    padding: 0 20px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.newsletter-btn:hover {
+    background: var(--color-secondary-hover);
+}
+
+.footer-bottom {
+    max-width: 1400px;
+    margin: 60px auto 0 auto;
+    padding-top: 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+    position: relative;
+    z-index: 2;
+}
+
+/* ==========================================
+   11. RESPONSIVE DESIGN BREAKPOINTS
+   ========================================== */
+@media (max-width: 1200px) {
+    .footer-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+    }
+}
+
+@media (max-width: 992px) {
+    .hero-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        text-align: center;
+    }
+    .hero-description {
+        margin: 0 auto 30px auto;
+    }
+    .hero-buttons {
+        justify-content: center;
+    }
+    .hero-image-wrapper {
+        order: -1;
+    }
+    .hero-title {
+        font-size: 2.8rem;
+    }
+    .nav-menu {
+        display: none; /* Dynamic JS drawer will show this */
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-title {
+        font-size: 2.2rem;
+    }
+    .footer-container {
+        grid-template-columns: 1fr;
+    }
+    .footer-bottom {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+}

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - MEBV</title>
+    <meta name="description" content="Education insights, career guidance, and learning updates from the Malawi Education Books and Vacancies platform." />
+    <meta name="theme-color" content="#0A1931" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" type="image/png" href="assets/LOGO.png">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="nav-brand">
+                <img src="assets/LOGO.png" alt="MEBV Logo" class="nav-logo">
+                <span class="nav-logo-text">MEBV</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="books.html" class="nav-link">Books</a></li>
+                <li><a href="videos.html" class="nav-link">Videos</a></li>
+                <li><a href="python.html" class="nav-link">Python Academy</a></li>
+                <li><a href="vacancies.html" class="nav-link">Vacancies</a></li>
+                <li><a href="services.html" class="nav-link">Services</a></li>
+                <li><a href="blog.html" class="nav-link active">Blog</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+                <li><a href="contact.html" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="login.html" class="btn btn-outline">Login</a>
+                <a href="register.html" class="btn btn-primary">Join Free</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-section" style="padding-top:140px; padding-bottom:80px;">
+        <div class="hero-container">
+            <div class="hero-content">
+                <span class="hero-badge">News & Insights</span>
+                <h1 class="hero-title">Latest Education Articles for Malawi Learners</h1>
+                <p class="hero-description">Stay informed with career advice, exam guidance, learning strategies, and site updates from the MEBV community.</p>
+                <div class="hero-buttons">
+                    <a href="#blog-search" class="btn btn-primary">Search Articles</a>
+                </div>
+            </div>
+            <div class="hero-image-wrapper">
+                <div class="hero-image-bg"></div>
+                <img src="assets/LOGO.png" alt="Blog" class="hero-image">
+            </div>
+        </div>
+    </header>
+
+    <main style="max-width:1400px; margin:0 auto; padding:40px 24px 80px;">
+        <section style="margin-bottom:40px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+            <div>
+                <h2>Education Advice & Local News</h2>
+                <p style="color: var(--color-text-muted);">Read curated blog posts from the MEBV team and learn how to prepare for school, jobs, and digital careers.</p>
+            </div>
+            <div style="flex:1; min-width:260px;">
+                <input id="blog-search" class="form-control" type="search" placeholder="Search blog articles..." />
+            </div>
+        </section>
+        <section id="blog-grid" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:24px;"></section>
+        <aside class="glass-card ad-slot blog-ad" style="padding:24px; margin-top:32px; text-align:center;">Loading campaign...</aside>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/ads.js"></script>
+    <script src="js/ratings.js"></script>
+    <script src="js/blog.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await BlogPage.init();
+            AdEngine.load('.blog-ad');
+        });
+    </script>
+</body>
+</html>

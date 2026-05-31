@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Book Library - MEBV</title>
+    <!-- Favicon using standardized LOGO.png -->
+    <link rel="icon" type="image/png" href="assets/LOGO.png">
+    
+    <!-- Fonts and Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        .library-layout {
+            max-width: 1400px;
+            margin: 120px auto 60px auto;
+            padding: 0 24px;
+        }
+        .search-and-request-container {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
+            margin-bottom: 40px;
+            align-items: center;
+        }
+        .ai-search-box {
+            position: relative;
+            flex-grow: 1;
+        }
+        .ai-search-input {
+            width: 100%;
+            padding: 16px 20px 16px 56px;
+            border-radius: var(--radius-md);
+            background: var(--glass-bg);
+            border: 1px solid var(--color-border);
+            font-size: 1.05rem;
+            color: var(--color-primary);
+            backdrop-filter: var(--glass-blur);
+            transition: var(--transition-smooth);
+            box-shadow: var(--glass-shadow);
+        }
+        .ai-search-input:focus {
+            background: #FFF;
+            border-color: var(--color-secondary);
+            box-shadow: 0 0 0 5px rgba(223, 177, 91, 0.15);
+        }
+        .ai-search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--color-secondary-hover);
+            font-size: 1.4rem;
+        }
+        .category-tab-bar {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            margin-bottom: 40px;
+            scrollbar-width: none; /* Hide scrollbar Firefox */
+        }
+        .category-tab-bar::-webkit-scrollbar {
+            display: none; /* Hide scrollbar Chrome/Safari */
+        }
+        .category-tab-btn {
+            padding: 10px 20px;
+            background: var(--glass-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--color-primary);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            white-space: nowrap;
+        }
+        .category-tab-btn:hover, .category-tab-btn.active {
+            background: var(--color-primary);
+            color: var(--color-accent);
+            border-color: var(--color-primary);
+        }
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 30px;
+        }
+        .book-card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .book-thumbnail-wrapper {
+            position: relative;
+            height: 320px;
+            background: var(--color-primary-light);
+            border-bottom: 1px solid var(--color-border);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .book-cover {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            transition: var(--transition-smooth);
+        }
+        .book-card:hover .book-cover {
+            transform: scale(1.05);
+        }
+        .book-cat-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(10, 25, 49, 0.85);
+            backdrop-filter: blur(4px);
+            color: var(--color-secondary);
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .book-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        .book-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+        .book-author {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        .book-footer {
+            margin-top: auto;
+            border-top: 1px solid var(--color-border);
+            padding-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .book-rating {
+            font-size: 0.85rem;
+            color: var(--color-secondary-hover);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGATION HEADER -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="nav-brand">
+                <img src="assets/LOGO.png" alt="MEBV Logo" class="nav-logo">
+                <span class="nav-logo-text">MEBV</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="books.html" class="nav-link active">Books</a></li>
+                <li><a href="videos.html" class="nav-link">Videos</a></li>
+                <li><a href="python.html" class="nav-link">Python Academy</a></li>
+                <li><a href="vacancies.html" class="nav-link">Vacancies</a></li>
+                <li><a href="services.html" class="nav-link">Services</a></li>
+                <li><a href="blog.html" class="nav-link">Blog</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+                <li><a href="contact.html" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div class="skeleton" style="width: 100px; height: 40px; border-radius: 8px;"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN LIBRARY WRAPPER -->
+    <div class="library-layout">
+        <div class="search-and-request-container">
+            <!-- AI Natural Language Search Box -->
+            <div class="ai-search-box">
+                <i class="fa-solid fa-wand-magic-sparkles ai-search-icon"></i>
+                <input type="text" id="ai-search" class="ai-search-input" placeholder='Try AI Search: "I need Biology MSCE books" or "Show nursing materials"'>
+            </div>
+            <!-- Request Book Trigger -->
+            <button class="btn btn-secondary" onclick="openBookRequestModal()"><i class="fa-solid fa-plus"></i> Request a Book</button>
+        </div>
+
+        <!-- Horizontal Categories Toolbar -->
+        <div class="category-tab-bar">
+            <button class="category-tab-btn active" data-category="All Books">All Library</button>
+            <button class="category-tab-btn" data-category="MSCE Books">MSCE Books</button>
+            <button class="category-tab-btn" data-category="JCE Books">JCE Books</button>
+            <button class="category-tab-btn" data-category="Primary Books">Primary Books</button>
+            <button class="category-tab-btn" data-category="Nursing Books">Nursing Books</button>
+            <button class="category-tab-btn" data-category="Novels">Novels</button>
+            <button class="category-tab-btn" data-category="Past Papers">Past Papers</button>
+            <button class="category-tab-btn" data-category="Others">Others</button>
+        </div>
+
+        <!-- Dynamic Books Grid -->
+        <div id="books-wrapper-grid" class="books-grid">
+            <!-- Loading Skeleton Loop -->
+            <div class="glass-card skeleton-card" style="padding: 20px; height: 420px;">
+                <div class="skeleton skeleton-image" style="height: 220px; margin-bottom: 16px;"></div>
+                <div class="skeleton skeleton-text title" style="width: 80%; margin-bottom: 12px;"></div>
+                <div class="skeleton skeleton-text" style="width: 50%; margin-bottom: 8px;"></div>
+                <div class="skeleton skeleton-text" style="width: 90%;"></div>
+            </div>
+            <div class="glass-card skeleton-card" style="padding: 20px; height: 420px;">
+                <div class="skeleton skeleton-image" style="height: 220px; margin-bottom: 16px;"></div>
+                <div class="skeleton skeleton-text title" style="width: 80%; margin-bottom: 12px;"></div>
+                <div class="skeleton skeleton-text" style="width: 50%; margin-bottom: 8px;"></div>
+                <div class="skeleton skeleton-text" style="width: 90%;"></div>
+            </div>
+            <div class="glass-card skeleton-card" style="padding: 20px; height: 420px;">
+                <div class="skeleton skeleton-image" style="height: 220px; margin-bottom: 16px;"></div>
+                <div class="skeleton skeleton-text title" style="width: 80%; margin-bottom: 12px;"></div>
+                <div class="skeleton skeleton-text" style="width: 50%; margin-bottom: 8px;"></div>
+                <div class="skeleton skeleton-text" style="width: 90%;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase Core Engine -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            let activeCategory = "All Books";
+            let allBooks = [];
+
+            // Trigger loading lifecycle once Supabase connection resolves
+            const loadEngine = setInterval(() => {
+                if (typeof MEBV !== 'undefined' && MEBV.client) {
+                    clearInterval(loadEngine);
+                    fetchBooksFromDatabase();
+                }
+            }, 100);
+
+            // Fetch books from Supabase
+            async function fetchBooksFromDatabase() {
+                const { data, error } = await MEBV.client
+                    .from('books')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (!error && data) {
+                    allBooks = data;
+                    renderBooks();
+                }
+            }
+
+            // Render book list matching current filter or search string
+            function renderBooks(filteredBooks = null) {
+                const booksToRender = filteredBooks || (activeCategory === "All Books" ? allBooks : allBooks.filter(b => b.category === activeCategory));
+                const wrapper = document.getElementById('books-wrapper-grid');
+                
+                if (booksToRender.length === 0) {
+                    wrapper.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--color-text-dark);">
+                            <i class="fa-solid fa-magnifying-glass" style="font-size: 3rem; color: var(--color-border); margin-bottom: 20px;"></i>
+                            <h3>No matches found in this category</h3>
+                            <p style="color: var(--color-text-muted); margin-top: 8px;">Modify parameters or submit a book request directly to our libraries.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                wrapper.innerHTML = '';
+                booksToRender.forEach(book => {
+                    const stars = '★'.repeat(Math.round(book.rating_avg || 5)) + '☆'.repeat(5 - Math.round(book.rating_avg || 5));
+                    wrapper.insertAdjacentHTML('beforeend', `
+                        <div class="glass-card book-card" style="animation: fadeIn 0.4s ease-out;">
+                            <div class="book-thumbnail-wrapper">
+                                <span class="book-cat-badge">${book.category}</span>
+                                <img src="${book.cover_url || 'assets/LOGO.png'}" alt="${book.title}" class="book-cover" onerror="this.src='assets/LOGO.png'">
+                            </div>
+                            <div class="book-content">
+                                <h4 class="book-title">${book.title}</h4>
+                                <span class="book-author">By ${book.author}</span>
+                                <p style="font-size: 0.85rem; color: var(--color-text-muted); line-height: 1.5; margin-bottom: 20px;">
+                                    ${book.description ? book.description.substring(0, 95) + '...' : 'No summary metadata available.'}
+                                </p>
+                                <div class="book-footer">
+                                    <span class="book-rating" title="Average Rating: ${book.rating_avg}">${stars}</span>
+                                    <div style="display: flex; gap: 8px;">
+                                        <button class="btn btn-outline" style="padding: 8px 12px; font-size: 0.8rem;" onclick="viewBookDetails('${book.id}')"><i class="fa-solid fa-eye"></i> Info</button>
+                                        <button class="btn btn-primary" style="padding: 8px 12px; font-size: 0.8rem;" onclick="processDownload('${book.id}', '${book.pdf_url}')"><i class="fa-solid fa-download"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                });
+            }
+
+            // Category Tab Clicks
+            const tabBtns = document.querySelectorAll('.category-tab-btn');
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    activeCategory = btn.getAttribute('data-category');
+                    document.getElementById('ai-search').value = ''; // Reset search on category toggle
+                    renderBooks();
+                });
+            });
+
+            // AI Natural Language Search Engine
+            const searchInput = document.getElementById('ai-search');
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.toLowerCase().trim();
+                if (!query) {
+                    renderBooks();
+                    return;
+                }
+
+                // Parser handles intents: "I need Biology MSCE books", "Show nursing materials"
+                let targetCategory = null;
+                if (query.includes('msce')) targetCategory = "MSCE Books";
+                else if (query.includes('jce')) targetCategory = "JCE Books";
+                else if (query.includes('primary')) targetCategory = "Primary Books";
+                else if (query.includes('nursing')) targetCategory = "Nursing Books";
+                else if (query.includes('novel')) targetCategory = "Novels";
+                else if (query.includes('past paper')) targetCategory = "Past Papers";
+
+                // Filter based on parsed parameters
+                const results = allBooks.filter(book => {
+                    const matchesCategory = targetCategory ? book.category === targetCategory : true;
+                    const cleanQuery = targetCategory ? query.replace(/msce|jce|primary|nursing|novel|past paper|i need|show|books|materials/g, '').trim() : query;
+                    const matchesText = book.title.toLowerCase().includes(cleanQuery) || 
+                                        book.author.toLowerCase().includes(cleanQuery) ||
+                                        (book.tags && book.tags.some(tag => tag.toLowerCase().includes(cleanQuery)));
+                    return matchesCategory && matchesText;
+                });
+
+                renderBooks(results);
+            });
+        });
+
+        // Guarded Download Verification logic
+        async function processDownload(bookId, pdfUrl) {
+            const hasPermission = MEBV.verifyDownloadPermission();
+            if (!hasPermission) return;
+
+            // Increment guest local logs if unauthenticated
+            MEBV.registerBookDownload(bookId);
+
+            // Increment Database analytics metrics
+            if (MEBV.client) {
+                await MEBV.client.rpc('increment_book_download', { book_row_id: bookId });
+            }
+
+            // Execute local redirect transfer to target PDF storage resource safely
+            window.open(pdfUrl, '_blank');
+        }
+
+        // Display Detailed Information Modal with Broken Link Reporter Integration
+        async function viewBookDetails(bookId) {
+            if (!MEBV.client) return;
+            const { data: book } = await MEBV.client
+                .from('books')
+                .select('*')
+                .eq('id', bookId)
+                .single();
+
+            if (!book) return;
+
+            const modalHTML = `
+                <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-top: 10px;">
+                    <img src="${book.cover_url || 'assets/LOGO.png'}" style="width: 120px; height: 160px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--color-border);" onerror="this.src='assets/LOGO.png'">
+                    <div style="flex: 1; min-width: 200px;">
+                        <p style="font-weight: 700; color: var(--color-primary);">${book.author}</p>
+                        <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 4px;">Category: ${book.category} | Downloads: ${book.download_count || 0}</p>
+                        <p style="font-size: 0.9rem; color: var(--color-text-dark); margin-top: 12px; line-height: 1.6;">${book.description || 'No descriptive metadata entered.'}</p>
+                    </div>
+                </div>
+                <div style="margin-top: 24px; border-top: 1px dashed var(--color-border); padding-top: 16px;">
+                    <span style="font-size: 0.8rem; color: var(--color-danger); cursor: pointer; font-weight: 700;" onclick="reportBrokenLink('${book.id}', 'book')">
+                        <i class="fa-solid fa-circle-exclamation"></i> Report broken resource link
+                    </span>
+                </div>
+            `;
+
+            MEBV.showModal(
+                book.title,
+                modalHTML,
+                `
+                    <button class="btn btn-outline" onclick="document.getElementById('mebv-dynamic-modal').remove()">Back</button>
+                    <button class="btn btn-primary" onclick="processDownload('${book.id}', '${book.pdf_url}')">Download PDF</button>
+                `
+            );
+        }
+
+        // Request Book modal triggers
+        function openBookRequestModal() {
+            const formHTML = `
+                <form id="book-req-form" style="margin-top: 10px;">
+                    <div class="form-group">
+                        <label class="form-label" for="req-title">Book Title / Past Paper Syllabus</label>
+                        <input type="text" id="req-title" class="form-control" placeholder="e.g. Physics MSCE Past Paper 2025" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="req-author">Author / Academic Body (Optional)</label>
+                        <input type="text" id="req-author" class="form-control" placeholder="e.g. MANEB">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="req-details">Additional Details (Optional)</label>
+                        <textarea id="req-details" class="form-control" placeholder="Specify year, language, or required modules..." style="height: 80px;"></textarea>
+                    </div>
+                </form>
+            `;
+
+            MEBV.showModal(
+                "Submit Book Request",
+                formHTML,
+                `
+                    <button class="btn btn-outline" onclick="document.getElementById('mebv-dynamic-modal').remove()">Cancel</button>
+                    <button class="btn btn-secondary" onclick="submitBookRequest()">Send Request</button>
+                `
+            );
+        }
+
+        async function submitBookRequest() {
+            const title = document.getElementById('req-title').value;
+            const author = document.getElementById('req-author').value;
+            const details = document.getElementById('req-details').value;
+
+            if (!title) return;
+
+            if (MEBV.client) {
+                const { error } = await MEBV.client.from('book_requests').insert({
+                    user_id: MEBV.currentUser?.id || null,
+                    book_title: title,
+                    author: author || "Unknown",
+                    details: details,
+                    status: 'pending'
+                });
+
+                if (!error) {
+                    MEBV.showModal("Request Submitted", "Your textbook lookup has been logged. Our librarians will acquire and upload it shortly.");
+                } else {
+                    MEBV.showModal("Submission Failed", error.message);
+                }
+            }
+        }
+
+        // Broken link logging trigger
+        function reportBrokenLink(itemId, itemType) {
+            const formHTML = `
+                <div class="form-group" style="margin-top: 10px;">
+                    <label class="form-label" for="broken-details">Verify Problem details</label>
+                    <textarea id="broken-details" class="form-control" placeholder="e.g. The server download times out, file is corrupted or is the wrong title..." required style="height: 100px;"></textarea>
+                </div>
+            `;
+            MEBV.showModal(
+                "Report Broken Resource Link",
+                formHTML,
+                `
+                    <button class="btn btn-outline" onclick="document.getElementById('mebv-dynamic-modal').remove()">Cancel</button>
+                    <button class="btn btn-primary" onclick="submitBrokenLinkReport('${itemId}', '${itemType}')">File Report</button>
+                `
+            );
+        }
+
+        async function submitBrokenLinkReport(itemId, itemType) {
+            const details = document.getElementById('broken-details').value;
+            if (!details) return;
+
+            if (MEBV.client) {
+                const { error } = await MEBV.client.from('broken_links').insert({
+                    user_id: MEBV.currentUser?.id || null,
+                    item_type: itemType,
+                    item_id: itemId,
+                    report_details: details,
+                    status: 'open'
+                });
+
+                if (!error) {
+                    MEBV.showModal("Report Logged", "Fault report filed. Administrative technical staff will audit and refresh resource URLs immediately.");
+                } else {
+                    MEBV.showModal("Filing Failed", error.message);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

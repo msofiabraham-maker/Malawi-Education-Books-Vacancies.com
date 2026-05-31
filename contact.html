@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - MEBV</title>
+    <meta name="description" content="Contact Malawi Education Books and Vacancies for support, inquiries, and partnership requests." />
+    <meta name="theme-color" content="#0A1931" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" type="image/png" href="assets/LOGO.png">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="nav-brand">
+                <img src="assets/LOGO.png" alt="MEBV Logo" class="nav-logo">
+                <span class="nav-logo-text">MEBV</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="books.html" class="nav-link">Books</a></li>
+                <li><a href="videos.html" class="nav-link">Videos</a></li>
+                <li><a href="python.html" class="nav-link">Python Academy</a></li>
+                <li><a href="vacancies.html" class="nav-link">Vacancies</a></li>
+                <li><a href="services.html" class="nav-link">Services</a></li>
+                <li><a href="blog.html" class="nav-link">Blog</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+                <li><a href="contact.html" class="nav-link active">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="login.html" class="btn btn-outline">Login</a>
+                <a href="register.html" class="btn btn-primary">Join Free</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-section" style="padding-top:140px; padding-bottom:80px;">
+        <div class="hero-container">
+            <div class="hero-content">
+                <span class="hero-badge">Get in Touch</span>
+                <h1 class="hero-title">Contact the MEBV Team</h1>
+                <p class="hero-description">Send questions, request support, or book service assistance with our Malawi education and career platform.</p>
+            </div>
+            <div class="hero-image-wrapper">
+                <div class="hero-image-bg"></div>
+                <img src="assets/LOGO.png" alt="Contact MEBV" class="hero-image">
+            </div>
+        </div>
+    </header>
+
+    <main style="max-width:1400px; margin:0 auto; padding:40px 24px 80px;">
+        <section style="display:grid; grid-template-columns:1fr 420px; gap:32px; align-items:start;">
+            <div class="glass-card" style="padding:28px;">
+                <h2>Contact Support</h2>
+                <p style="color: var(--color-text-muted); line-height:1.8; margin-bottom:24px;">Use the form to send general inquiries, report site issues, or request book and vacancy assistance.</p>
+                <div id="contact-message" style="margin-bottom:20px; color: var(--color-success);"></div>
+                <form id="contact-form">
+                    <div class="form-group">
+                        <label class="form-label" for="contact-name">Full Name</label>
+                        <input id="contact-name" class="form-control" placeholder="Your name" required />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="contact-email">Email Address</label>
+                        <input id="contact-email" class="form-control" type="email" placeholder="you@example.com" required />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="contact-phone">Phone Number</label>
+                        <input id="contact-phone" class="form-control" placeholder="+265..." required />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="contact-message-text">Message</label>
+                        <textarea id="contact-message-text" class="form-control" rows="6" placeholder="Describe your request or issue." required></textarea>
+                    </div>
+                    <button class="btn btn-primary" type="submit">Send Message</button>
+                </form>
+            </div>
+            <aside class="glass-card" style="padding:28px;">
+                <h3>Reach Us</h3>
+                <p style="color: var(--color-text-muted); margin-top:12px;">Email: msofiabraham@gmail.com</p>
+                <p style="color: var(--color-text-muted); margin-top:8px;">Phone: +265 993 984 344</p>
+                <p style="color: var(--color-text-muted); margin-top:8px;">WhatsApp: +265 897 228 943</p>
+                <p style="color: var(--color-text-muted); margin-top:8px;">Office: Lilongwe, Malawi</p>
+            </aside>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('contact-form');
+            const messageBox = document.getElementById('contact-message');
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const fullName = document.getElementById('contact-name').value.trim();
+                const email = document.getElementById('contact-email').value.trim();
+                const phone = document.getElementById('contact-phone').value.trim();
+                const details = document.getElementById('contact-message-text').value.trim();
+
+                if (!fullName || !email || !phone || !details) {
+                    messageBox.style.color = 'var(--color-danger)';
+                    messageBox.innerText = 'Please complete every field before sending.';
+                    return;
+                }
+
+                const client = MEBVSUP.init();
+                if (!client) {
+                    messageBox.style.color = 'var(--color-danger)';
+                    messageBox.innerText = 'Unable to connect to Supabase. Please try again later.';
+                    return;
+                }
+
+                const session = await client.auth.getSession();
+                const { error } = await client.from('service_inquiries').insert({
+                    user_id: session?.data?.session?.user?.id || null,
+                    service_name: 'General Inquiry',
+                    contact_name: fullName,
+                    contact_email: email,
+                    contact_phone: phone,
+                    details,
+                    status: 'pending'
+                });
+
+                if (error) {
+                    messageBox.style.color = 'var(--color-danger)';
+                    messageBox.innerText = error.message;
+                } else {
+                    messageBox.style.color = 'var(--color-success)';
+                    messageBox.innerText = 'Your message has been sent successfully. We will reply within 48 hours.';
+                    form.reset();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

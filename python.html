@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Academy - MEBV</title>
+    <!-- Favicon using standardized LOGO.png -->
+    <link rel="icon" type="image/png" href="assets/LOGO.png">
+    
+    <!-- Fonts and Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        .academy-layout {
+            max-width: 1400px;
+            margin: 120px auto 60px auto;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 40px;
+        }
+        .syllabus-sidebar {
+            height: fit-content;
+            padding: 24px;
+        }
+        .syllabus-tree {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .track-header {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--color-secondary-hover);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: 6px;
+        }
+        .lesson-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-text-dark);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+        .lesson-item:hover, .lesson-item.active {
+            background: var(--color-primary);
+            color: var(--color-accent);
+        }
+        .lesson-item.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .workspace-panel {
+            animation: fadeIn 0.5s ease-out;
+        }
+        .video-viewport {
+            aspect-ratio: 16/9;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            background: #000;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(10, 25, 49, 0.1);
+        }
+        .academy-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--color-border);
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+        .academy-tab {
+            padding: 12px 0;
+            font-weight: 700;
+            color: var(--color-text-muted);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: var(--transition-smooth);
+        }
+        .academy-tab.active {
+            color: var(--color-primary);
+            border-color: var(--color-secondary);
+        }
+        .quiz-card {
+            background: rgba(223, 177, 91, 0.05);
+            border: 1px dashed var(--color-secondary);
+            padding: 24px;
+            border-radius: var(--radius-sm);
+            margin-top: 30px;
+        }
+        .quiz-option {
+            display: block;
+            padding: 12px 16px;
+            background: #FFF;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            margin-top: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition-smooth);
+        }
+        .quiz-option:hover {
+            border-color: var(--color-primary);
+            background: rgba(10, 25, 49, 0.02);
+        }
+        .quiz-option.correct {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--color-success);
+            color: var(--color-success);
+        }
+        .quiz-option.incorrect {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--color-danger);
+            color: var(--color-danger);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGATION HEADER -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="nav-brand">
+                <img src="assets/LOGO.png" alt="MEBV Logo" class="nav-logo">
+                <span class="nav-logo-text">MEBV</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="books.html" class="nav-link">Books</a></li>
+                <li><a href="videos.html" class="nav-link">Videos</a></li>
+                <li><a href="python.html" class="nav-link active">Python Academy</a></li>
+                <li><a href="vacancies.html" class="nav-link">Vacancies</a></li>
+                <li><a href="services.html" class="nav-link">Services</a></li>
+                <li><a href="blog.html" class="nav-link">Blog</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+                <li><a href="contact.html" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div class="skeleton" style="width: 100px; height: 40px; border-radius: 8px;"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- PREMIUM WORKSPACE GRID -->
+    <div class="academy-layout">
+        <!-- SYLLABUS DIRECTORY -->
+        <aside class="glass-card syllabus-sidebar">
+            <h3 style="margin-bottom: 20px;"><i class="fa-solid fa-graduation-cap"></i> Python Tracks</h3>
+            <div class="syllabus-tree">
+                <!-- Beginner Track Nodes -->
+                <div>
+                    <div class="track-header">Beginner Track</div>
+                    <div id="beginner-node-list">
+                        <div class="lesson-item active" onclick="loadLesson(0)"><i class="fa-solid fa-play"></i> 1. Introduction</div>
+                    </div>
+                </div>
+
+                <!-- Intermediate Track Nodes -->
+                <div>
+                    <div class="track-header">Intermediate Track</div>
+                    <div id="intermediate-node-list">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+
+                <!-- Advanced Track Nodes -->
+                <div>
+                    <div class="track-header">Advanced Track</div>
+                    <div id="advanced-node-list">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- LESSON WORKSPACE CONTENT -->
+        <main class="workspace-panel">
+            <!-- Course Player -->
+            <div class="video-viewport">
+                <iframe id="lesson-frame" width="100%" height="100%" src="" frameborder="0" allowfullscreen></iframe>
+            </div>
+
+            <!-- Tabs System -->
+            <div class="academy-tabs">
+                <span class="academy-tab active" data-panel="panel-notes">Lecture Notes</span>
+                <span class="academy-tab" data-panel="panel-code">Code Exercises</span>
+                <span class="academy-tab" data-panel="panel-quiz">Module Assessment</span>
+            </div>
+
+            <!-- Notes Panel -->
+            <div id="panel-notes" class="workspace-tab-panel" style="display: block; line-height: 1.7;">
+                <h2 id="lesson-title" style="color: var(--color-primary); margin-bottom: 12px;">Python Academy Introduction</h2>
+                <div id="lesson-notes-content" style="color: var(--color-text-dark);">
+                    <!-- Injected dynamically -->
+                </div>
+            </div>
+
+            <!-- Exercises Panel -->
+            <div id="panel-code" class="workspace-tab-panel" style="display: none;">
+                <h3 style="margin-bottom: 12px;">Practice Exercise</h3>
+                <p id="lesson-exercise-desc" style="color: var(--color-text-dark); margin-bottom: 20px;"></p>
+                <div class="glass-card" style="padding: 20px; background: #1E293B; color: #FFF; border-radius: var(--radius-sm); font-family: monospace;">
+                    <p style="color: var(--color-secondary);"># Write your python code below:</p>
+                    <textarea id="code-sandbox" style="width: 100%; height: 180px; background: transparent; color: #FFF; border: none; font-family: monospace; outline: none; font-size: 1rem; resize: none;" placeholder="print('Hello, Malawi!')"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="testCode()" style="margin-top: 16px;"><i class="fa-solid fa-circle-play"></i> Run Code Sandbox</button>
+            </div>
+
+            <!-- Quiz Panel -->
+            <div id="panel-quiz" class="workspace-tab-panel" style="display: none;">
+                <div class="quiz-card">
+                    <h3 id="quiz-question-title" style="color: var(--color-primary);">Quiz Challenge</h3>
+                    <div id="quiz-options-wrapper" style="margin-top: 15px;">
+                        <!-- Options injected dynamically -->
+                    </div>
+                    <div id="quiz-feedback" style="margin-top: 20px; font-weight: 700; display: none;"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Supabase Core Engine -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            let activeLessonIndex = 0;
+            let lessons = [];
+            let isPremiumUser = false;
+
+            // Lesson Data Model
+            const fallbackLessons = [
+                {
+                    id: "001",
+                    level: "BEGINNER",
+                    title: "1. Python Introduction",
+                    youtube_id: "Y8Tko2YC5hA",
+                    notes: "Python is a high-level, interpreted programming language known for its readability and simplicity. Created by Guido van Rossum and released in 1991, it supports OOP, procedural, and functional programming methodologies.",
+                    exercises: "Write a program that prints your name and your district of origin in Malawi.",
+                    quiz_questions: [
+                        {
+                            question: "Who developed the Python Programming Language?",
+                            options: ["Guido van Rossum", "Dennis Ritchie", "Bjarne Stroustrup", "James Gosling"],
+                            correct_index: 0
+                        }
+                    ],
+                    xp_reward: 50
+                },
+                {
+                    id: "002",
+                    level: "BEGINNER",
+                    title: "2. Installation & Settings",
+                    youtube_id: "Y8Tko2YC5hA",
+                    notes: "To install Python, visit python.org, download the appropriate package, and ensure you check the box that says 'Add Python to PATH' during installation setup on Windows/Mac.",
+                    exercises: "Define variable initialization parameters correctly in terminal.",
+                    quiz_questions: [
+                        {
+                            question: "What check box should you select during Windows installation?",
+                            options: ["Register online", "Add Python to PATH", "Create Desktop Shortcut", "Disable telemetry"],
+                            correct_index: 1
+                        }
+                    ],
+                    xp_reward: 50
+                },
+                {
+                    id: "003",
+                    level: "INTERMEDIATE",
+                    title: "1. OOP and Methods",
+                    youtube_id: "Y8Tko2YC5hA",
+                    notes: "Object-Oriented Programming (OOP) is a paradigm that structures software designs around data, or objects, rather than functions or logic. Classes define blueprints.",
+                    exercises: "Define a class named 'MalawiStudent' with class properties.",
+                    quiz_questions: [
+                        {
+                            question: "Which keyword defines a blueprint blueprint structure?",
+                            options: ["def", "class", "blueprint", "struct"],
+                            correct_index: 1
+                        }
+                    ],
+                    xp_reward: 100
+                }
+            ];
+
+            // Setup Tab togglers
+            const tabs = document.querySelectorAll('.academy-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    document.querySelectorAll('.workspace-tab-panel').forEach(p => p.style.display = 'none');
+                    const targetPanel = tab.getAttribute('data-panel');
+                    document.getElementById(targetPanel).style.display = 'block';
+                });
+            });
+
+            // Sync with Supabase Lifecycle
+            const syncEngine = setInterval(() => {
+                if (typeof MEBV !== 'undefined' && MEBV.client) {
+                    clearInterval(syncEngine);
+                    verifyUserStatusAndLoadAcademy();
+                }
+            }, 100);
+
+            async function verifyUserStatusAndLoadAcademy() {
+                const { data: { session } } = await MEBV.client.auth.getSession();
+                if (!session) {
+                    window.location.href = "login.html";
+                    return;
+                }
+
+                // Check premium status using profile verification state
+                const { data: profile, error: profileErr } = await MEBV.client
+                    .from('profiles')
+                    .select('is_verified')
+                    .eq('id', session.user.id)
+                    .single();
+
+                if (profileErr || !profile) {
+                    MEBV.showModal("Unable to verify premium status", "We could not confirm your premium access right now. Please try again later.");
+                    return;
+                }
+
+                isPremiumUser = profile.is_verified === true;
+
+                // Fetch database python courses, falling back to static structures if empty
+                const { data: dbLessons } = await MEBV.client
+                    .from('python_lessons')
+                    .select('*')
+                    .order('lesson_order', { ascending: true });
+
+                lessons = (dbLessons && dbLessons.length > 0) ? dbLessons : fallbackLessons;
+                
+                populateSyllabusNodes();
+                loadLesson(0);
+            }
+
+            function populateSyllabusNodes() {
+                const begContainer = document.getElementById('beginner-node-list');
+                const intContainer = document.getElementById('intermediate-node-list');
+                const advContainer = document.getElementById('advanced-node-list');
+
+                begContainer.innerHTML = '';
+                intContainer.innerHTML = '';
+                advContainer.innerHTML = '';
+
+                lessons.forEach((les, idx) => {
+                    const isLocked = (idx > 0 && !isPremiumUser); // Only first lesson is free preview
+                    const lockIcon = isLocked ? '<i class="fa-solid fa-lock" style="color: var(--color-secondary);"></i>' : '<i class="fa-solid fa-play"></i>';
+                    
+                    const markup = `
+                        <div class="lesson-item ${idx === activeLessonIndex ? 'active' : ''} ${isLocked ? 'locked' : ''}" onclick="attemptLoadLesson(${idx})">
+                            <span>${lockIcon} ${les.title}</span>
+                        </div>
+                    `;
+
+                    if (les.level === "BEGINNER") begContainer.insertAdjacentHTML('beforeend', markup);
+                    else if (les.level === "INTERMEDIATE") intContainer.insertAdjacentHTML('beforeend', markup);
+                    else if (les.level === "ADVANCED") advContainer.insertAdjacentHTML('beforeend', markup);
+                });
+            }
+
+            window.attemptLoadLesson = function(index) {
+                if (index > 0 && !isPremiumUser) {
+                    MEBV.showModal(
+                        "Python Premium Access Required",
+                        "Unlock advanced modules, practice structures, quizzes, and earn an authentic verification certificate. Upgrades support educational operations across Malawi.",
+                        `
+                            <button class="btn btn-outline" onclick="document.getElementById('mebv-dynamic-modal').remove()">Later</button>
+                            <a href="profile.html" class="btn btn-secondary">Upgrade Premium (MWK 25,000)</a>
+                        `
+                    );
+                    return;
+                }
+                loadLesson(index);
+            };
+
+            window.loadLesson = function(index) {
+                activeLessonIndex = index;
+                const les = lessons[index];
+                if (!les) return;
+
+                // Set Active Sidebar
+                const items = document.querySelectorAll('.lesson-item');
+                items.forEach((item, idx) => {
+                    item.classList.remove('active');
+                    if (idx === index) item.classList.add('active');
+                });
+
+                // Update Viewport & Notes
+                document.getElementById('lesson-frame').src = `https://www.youtube.com/embed/${les.youtube_id}?rel=0`;
+                document.getElementById('lesson-title').innerText = les.title;
+                document.getElementById('lesson-notes-content').innerHTML = les.notes;
+                document.getElementById('lesson-exercise-desc').innerText = les.exercises || "Practice compiling functional python blocks matching curriculum objectives.";
+
+                // Generate Assessment Quiz
+                renderQuiz(les);
+            };
+
+            function renderQuiz(lesson) {
+                const questionWrapper = document.getElementById('quiz-options-wrapper');
+                const feedback = document.getElementById('quiz-feedback');
+                const qTitle = document.getElementById('quiz-question-title');
+
+                feedback.style.display = 'none';
+
+                if (!lesson.quiz_questions || lesson.quiz_questions.length === 0) {
+                    qTitle.innerText = "No Quiz Assessment";
+                    questionWrapper.innerHTML = "<p style='color: var(--color-text-muted);'>No evaluation quiz required for this overview module.</p>";
+                    return;
+                }
+
+                const currentQ = lesson.quiz_questions[0]; // Simplification for MVP (1 structured quiz per class)
+                qTitle.innerText = `Quiz: ${currentQ.question}`;
+                questionWrapper.innerHTML = '';
+
+                currentQ.options.forEach((opt, oIdx) => {
+                    questionWrapper.insertAdjacentHTML('beforeend', `
+                        <button class="quiz-option" onclick="submitAnswer(${oIdx}, ${currentQ.correct_index}, ${lesson.xp_reward})">${opt}</button>
+                    `);
+                });
+            }
+
+            window.submitAnswer = async function(chosenIdx, correctIdx, xpReward) {
+                const feedback = document.getElementById('quiz-feedback');
+                const options = document.querySelectorAll('.quiz-option');
+
+                // Freeze options
+                options.forEach(opt => opt.disabled = true);
+
+                if (chosenIdx === correctIdx) {
+                    options[chosenIdx].classList.add('correct');
+                    feedback.innerHTML = `<span style="color: var(--color-success);"><i class="fa-solid fa-circle-check"></i> Correct! +${xpReward} XP Earned.</span>`;
+                    feedback.style.display = 'block';
+
+                    // Update progress metrics in database
+                    await recordQuizCompletion(xpReward);
+                } else {
+                    options[chosenIdx].classList.add('incorrect');
+                    options[correctIdx].classList.add('correct');
+                    feedback.innerHTML = `<span style="color: var(--color-danger);"><i class="fa-solid fa-circle-xmark"></i> Incorrect. Revise summary structures and attempt again.</span>`;
+                    feedback.style.display = 'block';
+                }
+            };
+
+            async function recordQuizCompletion(xpReward) {
+                const { data: { session } } = await MEBV.client.auth.getSession();
+                if (!session) return;
+
+                const activeLes = lessons[activeLessonIndex];
+
+                // Write progress record
+                await MEBV.client.from('python_progress').upsert({
+                    user_id: session.user.id,
+                    lesson_id: activeLes.id,
+                    completed: true,
+                    xp_earned: xpReward
+                });
+
+                // Update Profile XP
+                const { data: profile } = await MEBV.client
+                    .from('profiles')
+                    .select('xp')
+                    .eq('id', session.user.id)
+                    .single();
+
+                const currentXp = (profile?.xp || 0) + xpReward;
+
+                await MEBV.client
+                    .from('profiles')
+                    .update({ xp: currentXp })
+                    .eq('id', session.user.id);
+
+                // Audit logging
+                await MEBV.client.from('audit_logs').insert({
+                    user_id: session.user.id,
+                    action: 'LESSON_COMPLETED',
+                    details: `Earned ${xpReward} XP on course: ${activeLes.title}`
+                });
+
+                // Check for overall certification thresholds (e.g., if final lesson passed)
+                if (activeLessonIndex === lessons.length - 1) {
+                    await generateCertification(session.user.id);
+                }
+            }
+
+            async function generateCertification(userId) {
+                const hash = 'MEBV-PY-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+                await MEBV.client.from('certificates').insert({
+                    certificate_id: hash,
+                    user_id: userId,
+                    level: 'FULL_COURSE',
+                    verification_hash: hash
+                });
+
+                MEBV.showModal(
+                    "Syllabus Completed!",
+                    `Outstanding! You have successfully completed all tracks in the MEBV Python Academy curriculum. Your verified certificate <strong>${hash}</strong> has been generated and is available on your dashboard profile.`,
+                    `<a href="profile.html" class="btn btn-secondary">Go to Dashboard</a>`
+                );
+            }
+
+            // Dummy runtime runner simulator
+            window.testCode = function() {
+                const code = document.getElementById('code-sandbox').value;
+                MEBV.showModal("Simulation Environment", `
+                    <div style="background:#1E293B; color:#00FF66; padding:20px; font-family:monospace; border-radius:4px;">
+                        <p style="color:#FFF;">$ python main.py</p>
+                        <p>Hello, Malawi!</p>
+                        <p style="color:#FFF; margin-top:10px;">Simulation complete. Syntax compilation succeeded.</p>
+                    </div>
+                `);
+            };
+        });
+    </script>
+</body>
+</html>

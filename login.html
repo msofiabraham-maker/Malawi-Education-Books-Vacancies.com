@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Login - MEBV</title>
+    <!-- Favicon using standardized LOGO.png -->
+    <link rel="icon" type="image/png" href="assets/LOGO.png">
+    
+    <!-- Fonts and Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        .login-page-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top right, rgba(10, 25, 49, 0.08), transparent 45%),
+                        radial-gradient(circle at bottom left, rgba(223, 177, 91, 0.08), transparent 50%),
+                        var(--color-bg-light);
+            padding: 24px;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .login-logo-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin: 0 auto 16px auto;
+            animation: float 4s ease-in-out infinite;
+        }
+        .social-login-btn {
+            width: 100%;
+            padding: 12px;
+            background: #FFF;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-weight: 600;
+            color: var(--color-text-dark);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            margin-bottom: 24px;
+        }
+        .social-login-btn:hover {
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+            transform: translateY(-1px);
+        }
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 24px;
+            color: var(--color-text-muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .divider:not(:empty)::before { margin-right: .5em; }
+        .divider:not(:empty)::after { margin-left: .5em; }
+
+        .form-helpers {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .error-banner {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: var(--color-danger);
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+        /* Admin specific theme warning dynamic override */
+        .admin-override {
+            border-color: rgba(223, 177, 91, 0.8);
+            box-shadow: 0 0 25px rgba(223, 177, 91, 0.15);
+        }
+        .admin-badge {
+            display: none;
+            background: linear-gradient(135deg, var(--color-secondary), var(--color-secondary-hover));
+            color: var(--color-primary);
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 8px auto 0 auto;
+            width: fit-content;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-page-wrapper">
+        <div class="glass-card login-card" id="auth-box">
+            <div class="login-logo-header">
+                <img src="assets/LOGO.png" alt="MEBV Shield Logo" class="login-logo">
+                <h2 id="login-title">Sign In to MEBV</h2>
+                <div class="admin-badge" id="admin-indicator">Administrative Gate</div>
+                <p style="color: var(--color-text-muted); font-size: 0.9rem; margin-top: 8px;" id="login-subtitle">Access your personal past papers dashboard and academy classes.</p>
+            </div>
+
+            <!-- Error Feedback Banner -->
+            <div class="error-banner" id="error-message">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span id="error-text">Incorrect credentials. Please verify your data.</span>
+            </div>
+
+            <!-- Google Authentication Option -->
+            <button class="social-login-btn" id="btn-google-login">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google Icon" style="width: 18px; height: 18px;">
+                Continue with Google
+            </button>
+
+            <div class="divider">Or Sign In with Email</div>
+
+            <!-- Traditional Auth Form -->
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label" for="login-email">Email Address</label>
+                    <input type="email" id="login-email" class="form-control" placeholder="student@mebv.online" required>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label class="form-label" for="login-password">Password</label>
+                    <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+                </div>
+
+                <div class="form-helpers">
+                    <label style="display: flex; align-items: center; gap: 8px; color: var(--color-text-muted); cursor: pointer;">
+                        <input type="checkbox" id="remember-me" style="accent-color: var(--color-primary);"> Remember me
+                    </label>
+                    <a href="#" id="forgot-password" style="color: var(--color-secondary-hover);">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 20px;">
+                    <i class="fa-solid fa-lock"></i> Authorize Connection
+                </button>
+            </form>
+
+            <p style="text-align: center; font-size: 0.9rem; color: var(--color-text-muted);">
+                Don't have an account? <a href="register.html" style="color: var(--color-primary); font-weight: 700;">Join Free</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Supabase Core Engine -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/app.js"></script>
+    
+    <!-- Dynamic Auth Handler script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isAdminMode = urlParams.get('admin_access') === 'true';
+
+            const authBox = document.getElementById('auth-box');
+            const loginTitle = document.getElementById('login-title');
+            const loginSubtitle = document.getElementById('login-subtitle');
+            const adminIndicator = document.getElementById('admin-indicator');
+            const errorBanner = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+            const googleBtn = document.getElementById('btn-google-login');
+            const forgotPasswordLink = document.getElementById('forgot-password');
+
+            // 1. Check if administrative sequence was called
+            if (isAdminMode) {
+                authBox.classList.add('admin-override');
+                loginTitle.innerText = "Admin System Gate";
+                loginSubtitle.innerText = "Secure administrative terminal entry. Session attempts are audited.";
+                adminIndicator.style.display = "block";
+                googleBtn.style.display = "none"; // Admin bypass must use credential validation
+                document.querySelector('.divider').style.display = "none";
+            }
+
+            // 2. Form submission intercept
+            const form = document.getElementById('login-form');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                errorBanner.style.display = "none";
+
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+
+                if (!MEBV.client) {
+                    showError("Supabase connection offline. Check network configs.");
+                    return;
+                }
+
+                try {
+                    const { data, error } = await MEBV.client.auth.signInWithPassword({
+                        email: email,
+                        password: password
+                    });
+
+                    if (error) {
+                        showError(error.message);
+                        return;
+                    }
+
+                    // On Successful auth, check role requirements if administrative gate was requested
+                    if (isAdminMode) {
+                        const { data: profile } = await MEBV.client
+                            .from('profiles')
+                            .select('role')
+                            .eq('id', data.user.id)
+                            .single();
+
+                        if (!profile || !['super_admin', 'admin', 'content_manager', 'moderator'].includes(profile.role)) {
+                            await MEBV.client.auth.signOut(); // Disconnect unauthorized roles
+                            showError("Access Denied: Account lacks administrative privileges.");
+                            return;
+                        }
+
+                        // Log access
+                        await MEBV.client.from('audit_logs').insert({
+                            user_id: data.user.id,
+                            action: 'ADMIN_SIGN_IN',
+                            details: `Admin successfully accessed dashboard with role: ${profile.role}`
+                        });
+
+                        window.location.href = "admin.html";
+                    } else {
+                        window.location.href = "profile.html";
+                    }
+
+                } catch (err) {
+                    showError("Unknown local security exception occurred.");
+                    console.error(err);
+                }
+            });
+
+            // 3. Google OAuth implementation
+            googleBtn.addEventListener('click', async () => {
+                if (!MEBV.client) return;
+                const { error } = await MEBV.client.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin + '/profile.html'
+                    }
+                });
+                if (error) showError(error.message);
+            });
+
+            // 4. Forgot password recovery trigger
+            forgotPasswordLink.addEventListener('click', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value;
+                if (!email) {
+                    showError("Please specify email address to request key recovery.");
+                    return;
+                }
+                
+                if (!MEBV.client) return;
+                const { error } = await MEBV.client.auth.resetPasswordForEmail(email, {
+                    redirectTo: window.location.origin + '/login.html?reset_flow=true'
+                });
+
+                if (error) {
+                    showError(error.message);
+                } else {
+                    MEBV.showModal("Password Recovery Sent", `Verification link dispatched securely to: ${email}. Inspect inbox.`);
+                }
+            });
+
+            function showError(msg) {
+                errorText.innerText = msg;
+                errorBanner.style.display = "flex";
+            }
+        });
+    </script>
+</body>
+</html>

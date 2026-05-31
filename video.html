@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Learning Center - MEBV</title>
+    <!-- Favicon using standardized LOGO.png -->
+    <link rel="icon" type="image/png" href="assets/LOGO.png">
+    
+    <!-- Fonts and Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        .learning-center-layout {
+            max-width: 1400px;
+            margin: 120px auto 60px auto;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+        .classroom-view {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 30px;
+            margin-bottom: 50px;
+            display: none; /* Display only when a video is selected */
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .theatre-player-wrapper {
+            background: #000;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            aspect-ratio: 16/9;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            border: 1px solid var(--color-border);
+        }
+        .notes-workspace {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .workspace-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--color-border);
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+        .workspace-tab {
+            padding: 10px 0;
+            font-weight: 700;
+            color: var(--color-text-muted);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: var(--transition-smooth);
+        }
+        .workspace-tab.active {
+            color: var(--color-primary);
+            border-color: var(--color-secondary);
+        }
+        .workspace-panel {
+            display: none;
+            flex-grow: 1;
+        }
+        .workspace-panel.active {
+            display: flex;
+            flex-direction: column;
+        }
+        .notes-textarea {
+            width: 100%;
+            flex-grow: 1;
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            background: #FFF;
+            border: 1px solid var(--color-border);
+            resize: none;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+        .notes-textarea:focus {
+            border-color: var(--color-secondary);
+        }
+        .videos-catalog-section {
+            animation: fadeIn 0.8s ease;
+        }
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        .video-thumbnail-container {
+            position: relative;
+            aspect-ratio: 16/9;
+            background: var(--color-primary-light);
+            overflow: hidden;
+        }
+        .video-thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-smooth);
+        }
+        .video-card:hover .video-thumbnail {
+            transform: scale(1.05);
+        }
+        .play-overlay-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            font-size: 3.5rem;
+            color: rgba(255,255,255,0.85);
+            transition: var(--transition-smooth);
+            pointer-events: none;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .video-card:hover .play-overlay-icon {
+            transform: translate(-50%, -50%) scale(1.1);
+            color: var(--color-secondary);
+        }
+        .video-duration {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.75);
+            color: #FFF;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .category-tab-bar {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            margin-bottom: 40px;
+            scrollbar-width: none;
+        }
+        .category-tab-bar::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGATION HEADER -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="nav-brand">
+                <img src="assets/LOGO.png" alt="MEBV Logo" class="nav-logo">
+                <span class="nav-logo-text">MEBV</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="books.html" class="nav-link">Books</a></li>
+                <li><a href="videos.html" class="nav-link active">Videos</a></li>
+                <li><a href="python.html" class="nav-link">Python Academy</a></li>
+                <li><a href="vacancies.html" class="nav-link">Vacancies</a></li>
+                <li><a href="services.html" class="nav-link">Services</a></li>
+                <li><a href="blog.html" class="nav-link">Blog</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+                <li><a href="contact.html" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div class="skeleton" style="width: 100px; height: 40px; border-radius: 8px;"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CLASSROOM VIEW & CATALOG WORKSPACE -->
+    <div class="learning-center-layout">
+        
+        <!-- 1. DYNAMIC THEATRE CLASSROOM (Hidden by default, shown upon trigger) -->
+        <div id="theatre-classroom" class="classroom-view">
+            <div>
+                <div class="theatre-player-wrapper">
+                    <iframe id="youtube-frame" width="100%" height="100%" src="" title="YouTube Video Player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+                <h2 id="playing-title" style="margin-top: 24px; font-size: 1.6rem; color: var(--color-primary);">Interactive Video Module</h2>
+                <p id="playing-description" style="color: var(--color-text-muted); margin-top: 10px; font-size: 0.95rem; line-height: 1.6;">Access lecture notes and dynamic workspaces from the dashboard directly.</p>
+            </div>
+
+            <!-- Notes System & Class Progress Tabs -->
+            <div class="glass-card notes-workspace" style="padding: 24px;">
+                <div class="workspace-tabs">
+                    <span class="workspace-tab active" data-tab="panel-notes">My Notes Workspace</span>
+                </div>
+                
+                <div id="panel-notes" class="workspace-panel active">
+                    <p style="color: var(--color-text-muted); font-size: 0.85rem; margin-bottom: 12px;">Type summary notes while listening. Your records are saved automatically locally.</p>
+                    <textarea id="class-notes" class="notes-textarea" placeholder="Note down key formula derivations, coding examples or vocabulary definitions here..."></textarea>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-primary" onclick="saveLocalNotes()" style="padding: 10px 16px; font-size: 0.85rem; flex: 1;"><i class="fa-solid fa-cloud-arrow-up"></i> Auto-Save</button>
+                        <button class="btn btn-secondary" onclick="exportNotesAsText()" style="padding: 10px 16px; font-size: 0.85rem;"><i class="fa-solid fa-file-export"></i> Export</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. CATALOG EXPLORATION BAR -->
+        <section class="videos-catalog-section">
+            <div style="margin-bottom: 30px;">
+                <span class="hero-badge">Curriculum Video Tracks</span>
+                <h2>Structured Video Tutorials</h2>
+            </div>
+
+            <!-- Horizontal Categories Filter -->
+            <div class="category-tab-bar">
+                <button class="category-tab-btn active" data-category="All Videos">All Videos</button>
+                <button class="category-tab-btn" data-category="MSCE Lessons">MSCE Lessons</button>
+                <button class="category-tab-btn" data-category="JCE Lessons">JCE Lessons</button>
+                <button class="category-tab-btn" data-category="Primary Lessons">Primary Lessons</button>
+                <button class="category-tab-btn" data-category="Practical Programming">Practical Programming</button>
+                <button class="category-tab-btn" data-category="Nursing Tutorials">Nursing Tutorials</button>
+            </div>
+
+            <!-- Dynamic Catalog Grid -->
+            <div id="videos-wrapper-grid" class="video-grid">
+                <!-- Skeletons -->
+                <div class="glass-card skeleton-card" style="padding: 15px;">
+                    <div class="skeleton skeleton-image" style="aspect-ratio: 16/9; margin-bottom: 16px;"></div>
+                    <div class="skeleton skeleton-text title" style="width: 80%; margin-bottom: 8px;"></div>
+                    <div class="skeleton skeleton-text" style="width: 40%;"></div>
+                </div>
+                <div class="glass-card skeleton-card" style="padding: 15px;">
+                    <div class="skeleton skeleton-image" style="aspect-ratio: 16/9; margin-bottom: 16px;"></div>
+                    <div class="skeleton skeleton-text title" style="width: 80%; margin-bottom: 8px;"></div>
+                    <div class="skeleton skeleton-text" style="width: 40%;"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Supabase Core Connection -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            let activeCategory = "All Videos";
+            let allVideos = [];
+            let currentlyPlayingId = null;
+
+            // Supabase load check
+            const loadEngine = setInterval(() => {
+                if (typeof MEBV !== 'undefined' && MEBV.client) {
+                    clearInterval(loadEngine);
+                    fetchVideosFromDatabase();
+                }
+            }, 100);
+
+            // Fetch Videos
+            async function fetchVideosFromDatabase() {
+                const { data, error } = await MEBV.client
+                    .from('videos')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (!error && data) {
+                    allVideos = data;
+                    renderVideos();
+                }
+            }
+
+            // Render catalog grid matching active layout
+            function renderVideos() {
+                const videosToRender = activeCategory === "All Videos" ? allVideos : allVideos.filter(v => v.category === activeCategory);
+                const wrapper = document.getElementById('videos-wrapper-grid');
+
+                if (videosToRender.length === 0) {
+                    wrapper.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
+                            <i class="fa-solid fa-film" style="font-size: 3rem; color: var(--color-border); margin-bottom: 20px;"></i>
+                            <h3>No tutorial modules uploaded in this category</h3>
+                            <p style="color: var(--color-text-muted); margin-top: 8px;">Join our classes or inquire on custom source tracks.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                wrapper.innerHTML = '';
+                videosToRender.forEach(video => {
+                    const defaultThumbnail = `https://img.youtube.com/vi/${video.youtube_id}/maxresdefault.jpg`;
+                    wrapper.insertAdjacentHTML('beforeend', `
+                        <div class="glass-card video-card" onclick="launchTheatricalLesson('${video.id}')" style="cursor: pointer; animation: fadeIn 0.4s ease-out; overflow: hidden; height: 100%;">
+                            <div class="video-thumbnail-container">
+                                <img src="${video.thumbnail_url || defaultThumbnail}" alt="${video.title}" class="video-thumbnail" onerror="this.src='https://img.youtube.com/vi/${video.youtube_id}/hqdefault.jpg'">
+                                <span class="play-overlay-icon"><i class="fa-solid fa-circle-play"></i></span>
+                            </div>
+                            <div style="padding: 18px;">
+                                <span class="hero-badge" style="font-size: 0.7rem; padding: 3px 8px; margin-bottom: 10px;">${video.category}</span>
+                                <h4 style="font-size: 1rem; color: var(--color-primary); margin-top: 6px; line-height: 1.4;">${video.title}</h4>
+                            </div>
+                        </div>
+                    `);
+                });
+            }
+
+            // Tab toggling events
+            const tabBtns = document.querySelectorAll('.category-tab-btn');
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    activeCategory = btn.getAttribute('data-category');
+                    renderVideos();
+                });
+            });
+
+            // Launch Active Video Player Screen and load associated notes
+            window.launchTheatricalLesson = function(videoId) {
+                const video = allVideos.find(v => v.id === videoId);
+                if (!video) return;
+
+                currentlyPlayingId = videoId;
+
+                // Bind elements
+                const theatreLayout = document.getElementById('theatre-classroom');
+                const frame = document.getElementById('youtube-frame');
+                const playTitle = document.getElementById('playing-title');
+                const playDesc = document.getElementById('playing-description');
+                const notesArea = document.getElementById('class-notes');
+
+                // Load parameters
+                frame.src = `https://www.youtube.com/embed/${video.youtube_id}?autoplay=1&rel=0`;
+                playTitle.innerText = video.title;
+                playDesc.innerText = video.description || "Interactive curriculum stream. Study concepts synchronously with supplementary library tools.";
+
+                // Pull Local Notes associated with this resource
+                const localNotes = localStorage.getItem(`mebv_notes_${videoId}`);
+                notesArea.value = localNotes || '';
+
+                // Transition viewport
+                theatreLayout.style.display = "grid";
+                window.scrollTo({ top: theatreLayout.offsetTop - 140, behavior: 'smooth' });
+            };
+
+            // Local save tracker
+            window.saveLocalNotes = function() {
+                if (!currentlyPlayingId) return;
+                const noteVal = document.getElementById('class-notes').value;
+                localStorage.setItem(`mebv_notes_${currentlyPlayingId}`, noteVal);
+                MEBV.showModal("Notes Secured", "Your modifications have been secured locally. Clear cookies or browser state will flush local copies.");
+            };
+
+            // Export local summary note stream
+            window.exportNotesAsText = function() {
+                if (!currentlyPlayingId) return;
+                const noteVal = document.getElementById('class-notes').value;
+                const activeVideo = allVideos.find(v => v.id === currentlyPlayingId);
+                
+                if (!noteVal.trim()) {
+                    MEBV.showModal("Export Blocked", "Please compile notes inside the workspace text area before trigger exporting.");
+                    return;
+                }
+
+                const blob = new Blob([`MEBV LESSON LECTURE NOTES\n\nLesson: ${activeVideo.title}\nCategory: ${activeVideo.category}\nExport Date: ${new Date().toLocaleDateString()}\n\n---\n\n${noteVal}`], { type: "text/plain;charset=utf-8" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `MEBV_Notes_${activeVideo.title.replace(/[^a-zA-Z0-9]/g, '_')}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            };
+        });
+    </script>
+</body>
+</html>

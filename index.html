@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malawi Education Books and Vacancies (MEBV)</title>
+    <!-- Favicon using standardized LOGO.png -->
+    <link rel="icon" type="image/png" href="assets/LOGO.png">
+    
+    <!-- Meta tags for SEO -->
+    <meta name="description" content="Access free MSCE/JCE past papers, secondary text books, nursing materials, premium Python lessons, and trending jobs in Malawi.">
+    
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheet links -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- ==========================================
+         1. SPLASH SCREEN (LAUNCH LOADER)
+         ========================================== -->
+    <div class="splash-screen">
+        <img src="assets/LOGO.png" alt="MEBV Logo" class="splash-logo">
+        <h1 class="splash-title">Malawi Education Books & Vacancies</h1>
+        <p class="splash-subtitle">Empowering Malawian Minds</p>
+        <div class="splash-progress-bar">
+            <div class="splash-progress-indicator"></div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         2. NAVIGATION HEADER
+         ========================================== -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="nav-brand">
+                <img src="assets/LOGO.png" alt="MEBV Logo" class="nav-logo">
+                <span class="nav-logo-text">MEBV</span>
+            </a>
+            
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link active">Home</a></li>
+                <li><a href="books.html" class="nav-link">Books</a></li>
+                <li><a href="videos.html" class="nav-link">Videos</a></li>
+                <li><a href="python.html" class="nav-link">Python Academy</a></li>
+                <li><a href="vacancies.html" class="nav-link">Vacancies</a></li>
+                <li><a href="services.html" class="nav-link">Services</a></li>
+                <li><a href="blog.html" class="nav-link">Blog</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+                <li><a href="contact.html" class="nav-link">Contact</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <!-- Injected dynamically by app.js based on session status -->
+                <div class="skeleton" style="width: 100px; height: 40px; border-radius: 8px;"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==========================================
+         3. GRADIENT HERO BANNER
+         ========================================== -->
+    <header class="hero-section">
+        <div class="hero-container">
+            <div class="hero-content">
+                <span class="hero-badge">Malawi's Premier Education Portal</span>
+                <h1 class="hero-title">Unlock Academic & <span>Career Potential</span></h1>
+                <p class="hero-description">
+                    Explore a digital library of secondary, primary, and nursing books. Gain competitive code skills at Python Academy, get past papers, and land secure career options with live vacancies.
+                </p>
+                <div class="hero-buttons">
+                    <a href="books.html" class="btn btn-primary"><i class="fa-solid fa-book-open"></i> Browse Books</a>
+                    <a href="vacancies.html" class="btn btn-secondary"><i class="fa-solid fa-briefcase"></i> View Vacancies</a>
+                </div>
+            </div>
+            <div class="hero-image-wrapper">
+                <div class="hero-image-bg"></div>
+                <img src="assets/LOGO.png" alt="MEBV Education Shield" class="hero-image">
+            </div>
+        </div>
+    </header>
+
+    <!-- ==========================================
+         4. CORE STATISTICS WITH COUNTERS
+         ========================================== -->
+    <section class="statistics-section" style="padding: 60px 24px; background: #FFF; border-bottom: 1px solid var(--color-border);">
+        <div class="statistics-container" style="max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 30px; text-align: center;">
+            <div class="glass-card statistic-card" style="padding: 30px;">
+                <div style="font-size: 2.5rem; color: var(--color-secondary); margin-bottom: 10px;"><i class="fa-solid fa-cloud-arrow-down"></i></div>
+                <h3 class="counter-number" data-target="15000" style="font-size: 2.2rem; color: var(--color-primary);">0</h3>
+                <p style="color: var(--color-text-muted); font-weight: 600;">Monthly Downloads</p>
+            </div>
+            <div class="glass-card statistic-card" style="padding: 30px;">
+                <div style="font-size: 2.5rem; color: var(--color-secondary); margin-bottom: 10px;"><i class="fa-solid fa-user-graduate"></i></div>
+                <h3 class="counter-number" data-target="3200" style="font-size: 2.2rem; color: var(--color-primary);">0</h3>
+                <p style="color: var(--color-text-muted); font-weight: 600;">Registered Students</p>
+            </div>
+            <div class="glass-card statistic-card" style="padding: 30px;">
+                <div style="font-size: 2.5rem; color: var(--color-secondary); margin-bottom: 10px;"><i class="fa-solid fa-graduation-cap"></i></div>
+                <h3 class="counter-number" data-target="980" style="font-size: 2.2rem; color: var(--color-primary);">0</h3>
+                <p style="color: var(--color-text-muted); font-weight: 600;">Python Grads</p>
+            </div>
+            <div class="glass-card statistic-card" style="padding: 30px;">
+                <div style="font-size: 2.5rem; color: var(--color-secondary); margin-bottom: 10px;"><i class="fa-solid fa-briefcase"></i></div>
+                <h3 class="counter-number" data-target="450" style="font-size: 2.2rem; color: var(--color-primary);">0</h3>
+                <p style="color: var(--color-text-muted); font-weight: 600;">Active Job Openings</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         5. INTERACTIVE BANNER ADVERTISEMENT
+         ========================================== -->
+    <div class="ad-banner-section">
+        <div class="ad-wrapper">
+            <span class="ad-label">Sponsored</span>
+            <div style="display: flex; gap: 20px; align-items: center; color: var(--color-accent); flex-wrap: wrap; justify-content: space-between; width: 100%;">
+                <div>
+                    <h4 style="color: var(--color-secondary); font-size: 1.25rem; margin-bottom: 4px;">Dynamic Cloud Computing Cohort Starting Soon!</h4>
+                    <p style="opacity: 0.85; font-size: 0.9rem;">Elevate your local business operations. Secure pathways through our software frameworks.</p>
+                </div>
+                <a href="services.html" class="btn btn-secondary" style="padding: 10px 20px;">Inquire Now</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         6. FEATURED SECTIONS (BOOKS & VACANCIES)
+         ========================================== -->
+    <section class="explore-section" style="padding: 80px 24px; max-width: 1400px; margin: 0 auto;">
+        <!-- Featured Books Sub-header -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px;">
+            <div>
+                <span class="hero-badge" style="margin-bottom: 12px;">Top Picks</span>
+                <h2>Featured Book Library</h2>
+            </div>
+            <a href="books.html" style="color: var(--color-secondary-hover); font-weight: 700; font-size: 0.95rem;">View Library <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+
+        <!-- Books Dynamic Grid Shell -->
+        <div id="featured-books-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-bottom: 80px;">
+            <!-- Placeholder Skeleton Cards loaded until DB connection parses -->
+            <div class="glass-card skeleton-card" style="padding: 20px; height: 380px;">
+                <div class="skeleton skeleton-image" style="height: 180px; margin-bottom: 16px;"></div>
+                <div class="skeleton skeleton-text title" style="width: 80%; margin-bottom: 12px;"></div>
+                <div class="skeleton skeleton-text" style="width: 50%; margin-bottom: 8px;"></div>
+                <div class="skeleton skeleton-text" style="width: 90%;"></div>
+            </div>
+            <div class="glass-card skeleton-card" style="padding: 20px; height: 380px;">
+                <div class="skeleton skeleton-image" style="height: 180px; margin-bottom: 16px;"></div>
+                <div class="skeleton skeleton-text title" style="width: 80%; margin-bottom: 12px;"></div>
+                <div class="skeleton skeleton-text" style="width: 50%; margin-bottom: 8px;"></div>
+                <div class="skeleton skeleton-text" style="width: 90%;"></div>
+            </div>
+            <div class="glass-card skeleton-card" style="padding: 20px; height: 380px;">
+                <div class="skeleton skeleton-image" style="height: 180px; margin-bottom: 16px;"></div>
+                <div class="skeleton skeleton-text title" style="width: 80%; margin-bottom: 12px;"></div>
+                <div class="skeleton skeleton-text" style="width: 50%; margin-bottom: 8px;"></div>
+                <div class="skeleton skeleton-text" style="width: 90%;"></div>
+            </div>
+        </div>
+
+        <!-- Featured Vacancies Sub-header -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px;">
+            <div>
+                <span class="hero-badge" style="margin-bottom: 12px; background: rgba(16, 185, 129, 0.1); color: var(--color-success);">Hot Opportunities</span>
+                <h2>Trending Vacancies</h2>
+            </div>
+            <a href="vacancies.html" style="color: var(--color-secondary-hover); font-weight: 700; font-size: 0.95rem;">View Jobs <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+
+        <!-- Vacancies Dynamic Grid Shell -->
+        <div id="featured-vacancies-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px;">
+            <div class="glass-card skeleton-card" style="padding: 24px; min-height: 200px;">
+                <div class="skeleton skeleton-text title" style="width: 60%; margin-bottom: 12px;"></div>
+                <div class="skeleton skeleton-text" style="width: 40%; margin-bottom: 16px;"></div>
+                <div class="skeleton skeleton-text" style="width: 85%; margin-bottom: 8px;"></div>
+                <div class="skeleton skeleton-text" style="width: 70%;"></div>
+            </div>
+            <div class="glass-card skeleton-card" style="padding: 24px; min-height: 200px;">
+                <div class="skeleton skeleton-text title" style="width: 60%; margin-bottom: 12px;"></div>
+                <div class="skeleton skeleton-text" style="width: 40%; margin-bottom: 16px;"></div>
+                <div class="skeleton skeleton-text" style="width: 85%; margin-bottom: 8px;"></div>
+                <div class="skeleton skeleton-text" style="width: 70%;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         7. FEATURED SERVICES MARKETPLACE
+         ========================================== -->
+    <section class="services-overview-section" style="background: rgba(10, 25, 49, 0.02); padding: 80px 24px; border-top: 1px solid var(--color-border);">
+        <div style="max-width: 1400px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 60px;">
+                <span class="hero-badge">Our Expertise</span>
+                <h2>Corporate & Academic Services</h2>
+                <p style="color: var(--color-text-muted); max-width: 600px; margin: 15px auto 0 auto;">MEBV developers, content creators, and academic consultants help construct customized learning pathways and business systems.</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
+                <div class="glass-card" style="padding: 30px;">
+                    <div style="font-size: 2rem; color: var(--color-secondary); margin-bottom: 20px;"><i class="fa-solid fa-laptop-code"></i></div>
+                    <h3 style="margin-bottom: 12px;">Web Development</h3>
+                    <p style="color: var(--color-text-muted); font-size: 0.95rem; margin-bottom: 20px;">SaaS-grade administrative architectures, commercial platforms, and responsive portal creation.</p>
+                    <a href="services.html" style="color: var(--color-primary); font-weight: 700;">Learn More <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+                <div class="glass-card" style="padding: 30px;">
+                    <div style="font-size: 2rem; color: var(--color-secondary); margin-bottom: 20px;"><i class="fa-solid fa-file-signature"></i></div>
+                    <h3 style="margin-bottom: 12px;">CV & Cover Writing</h3>
+                    <p style="color: var(--color-text-muted); font-size: 0.95rem; margin-bottom: 20px;">Maximize callback probability with professionally formatted cover letters and resume frameworks.</p>
+                    <a href="services.html" style="color: var(--color-primary); font-weight: 700;">Learn More <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+                <div class="glass-card" style="padding: 30px;">
+                    <div style="font-size: 2rem; color: var(--color-secondary); margin-bottom: 20px;"><i class="fa-solid fa-school"></i></div>
+                    <h3 style="margin-bottom: 12px;">School Management Systems</h3>
+                    <p style="color: var(--color-text-muted); font-size: 0.95rem; margin-bottom: 20px;">Centralized record interfaces, digital grading pipelines, and interactive attendance modules.</p>
+                    <a href="services.html" style="color: var(--color-primary); font-weight: 700;">Learn More <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         8. COMPLIANCE FOOTER
+         ========================================== -->
+    <footer class="footer">
+        <div class="footer-gradient-bg"></div>
+        <div class="footer-container">
+            <div class="footer-brand-info">
+                <div class="footer-logo-wrapper">
+                    <img src="assets/LOGO.png" alt="MEBV Shield Logo" class="footer-logo">
+                    <span class="footer-brand-name">MEBV</span>
+                </div>
+                <p class="footer-desc">Empowering educators and scaling professional networks across Malawi. Digital libraries, job portals, and code academies compiled systematically in one standard workspace.</p>
+            </div>
+
+            <div>
+                <h4 class="footer-heading">Resources</h4>
+                <ul class="footer-links">
+                    <li><a href="books.html" class="footer-link">Digital Library</a></li>
+                    <li><a href="videos.html" class="footer-link">Video tutorials</a></li>
+                    <li><a href="python.html" class="footer-link">Python Courses</a></li>
+                    <li><a href="vacancies.html" class="footer-link">Active Job Vacancies</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="footer-heading">Support</h4>
+                <ul class="footer-links">
+                    <li><a href="about.html" class="footer-link">About Us</a></li>
+                    <li><a href="contact.html" class="footer-link">Contact Support</a></li>
+                    <li><a href="services.html" class="footer-link">Business Inquiry</a></li>
+                    <li><a href="blog.html" class="footer-link">Educational Blog</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-newsletter-box">
+                <h4 class="footer-heading">Newsletter</h4>
+                <p class="footer-newsletter-desc">Stay updated on curriculum modifications and the weekly vacancy roll.</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Enter your email" class="newsletter-input" required>
+                    <button class="newsletter-btn"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 Malawi Education Books and Vacancies (MEBV). All rights reserved.</p>
+            <p>Designed and Managed by Abraham Msofi</p>
+        </div>
+    </footer>
+
+    <!-- ==========================================
+         9. EXTERNAL DEPENDENCIES & CORE ENGINE
+         ========================================== -->
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Application Scripts -->
+    <script src="js/app.js"></script>
+    
+    <!-- Trigger Home Specific Statistics Counter On Scroll -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            let countersAnimated = false;
+            window.addEventListener('scroll', () => {
+                const statsSection = document.querySelector('.statistics-section');
+                if (statsSection) {
+                    const rect = statsSection.getBoundingClientRect();
+                    if (rect.top < window.innerHeight && !countersAnimated) {
+                        MEBV.animateCounters();
+                        countersAnimated = true;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

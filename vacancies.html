@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vacancies Portal - MEBV</title>
+    <meta name="description" content="Explore job vacancies, scholarships, internships, and urgent opportunities across Malawi." />
+    <meta name="theme-color" content="#0A1931" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" type="image/png" href="assets/LOGO.png">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="nav-brand">
+                <img src="assets/LOGO.png" alt="MEBV Logo" class="nav-logo">
+                <span class="nav-logo-text">MEBV</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="books.html" class="nav-link">Books</a></li>
+                <li><a href="videos.html" class="nav-link">Videos</a></li>
+                <li><a href="python.html" class="nav-link">Python Academy</a></li>
+                <li><a href="vacancies.html" class="nav-link active">Vacancies</a></li>
+                <li><a href="services.html" class="nav-link">Services</a></li>
+                <li><a href="blog.html" class="nav-link">Blog</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+                <li><a href="contact.html" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="login.html" class="btn btn-outline">Login</a>
+                <a href="register.html" class="btn btn-primary">Join Free</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-section" style="padding-top:140px; padding-bottom:80px;">
+        <div class="hero-container">
+            <div class="hero-content">
+                <span class="hero-badge">Find Your Next Opportunity</span>
+                <h1 class="hero-title">Browse Malawi Vacancies, Internships and Scholarships</h1>
+                <p class="hero-description">Search through urgent hires, featured career pathways, and growth opportunities from education, health, IT and public service employers.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" onclick="document.getElementById('vacancy-search').focus()">Search Jobs</button>
+                    <button class="btn btn-secondary" onclick="window.scrollTo({ top: document.getElementById('vacancies-grid').offsetTop - 80, behavior: 'smooth' })">Explore Listings</button>
+                </div>
+            </div>
+            <div class="hero-image-wrapper">
+                <div class="hero-image-bg"></div>
+                <img src="assets/LOGO.png" alt="Vacancies" class="hero-image">
+            </div>
+        </div>
+    </header>
+
+    <main style="max-width:1400px; margin:0 auto; padding:40px 24px 80px;">
+        <section style="margin-bottom:40px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:24px;">
+                <div>
+                    <h2 style="margin-bottom:8px;">Job Search & Filters</h2>
+                    <p style="color: var(--color-text-muted);">Refine openings by category, urgency or subject specialist.</p>
+                </div>
+                <div style="flex:1; min-width:260px;">
+                    <input id="vacancy-search" class="form-control" type="search" placeholder="Search vacancies by title, company or skills" />
+                </div>
+            </div>
+            <div id="vacancy-category-tabs" style="display:flex; flex-wrap:wrap; gap:10px;"></div>
+        </section>
+
+        <section style="display:grid; grid-template-columns:1fr 320px; gap:32px;">
+            <div>
+                <div id="vacancies-grid" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:24px;"></div>
+            </div>
+            <aside style="display:grid; gap:24px;">
+                <div class="glass-card" style="padding:24px;">
+                    <h3 style="margin-bottom:12px; color: var(--color-primary);">Featured Vacancies</h3>
+                    <div id="featured-vacancies"></div>
+                </div>
+                <div class="glass-card" style="padding:24px;">
+                    <h3 style="margin-bottom:12px; color: var(--color-primary);">Urgent Hiring</h3>
+                    <div id="urgent-vacancies"></div>
+                </div>
+                <div class="glass-card ad-slot vacancy-ad" style="padding:24px; text-align:center;">Loading campaign...</div>
+            </aside>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/ai-search.js"></script>
+    <script src="js/ads.js"></script>
+    <script src="js/vacancies.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await VacanciesApp.init();
+            AdEngine.load('.vacancy-ad');
+        });
+    </script>
+</body>
+</html>
