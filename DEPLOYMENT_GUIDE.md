@@ -37,7 +37,6 @@ mebv-platform/
   profile.html
   admin.html
   manifest.json
-  service-worker.js
   README.md
   PROJECT_PROGRESS.md
   SUPABASE_SETUP.md
@@ -85,7 +84,6 @@ mebv-platform/
 ## 9. Security Checklist
 - Supabase Auth enabled.
 - RLS policies active for all tables.
-- `service-worker.js` only caches safe resources.
 - No hardcoded secrets in locked files.
 
 ## 10. Deployment to Cloudflare Pages

@@ -27,7 +27,6 @@ MEBV is a Malawi-focused education and career portal combining book libraries, v
 - `js/services.js` — Services page interaction
 - `js/blog.js` — Blog page interaction
 - `js/admin.js` — Admin dashboard behavior
-- `service-worker.js` — PWA offline caching
 - `manifest.json` — PWA manifest
 - `sql/policies.sql` — Supplemental tables and RLS policy setup
 - `sql/seed.sql` — Sample data seed scripts

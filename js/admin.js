@@ -22,6 +22,7 @@ window.AdminPanel = {
                 { name: 'author', label: 'Author', type: 'text' },
                 { name: 'category', label: 'Category', type: 'select', options: ['MSCE Books', 'JCE Books', 'Primary Books', 'Nursing Books', 'Novels', 'Past Papers', 'Others'], required: true },
                 { name: 'description', label: 'Description', type: 'textarea' },
+                { name: 'file_url', label: 'Google Drive Link (Optional)', type: 'text', placeholder: 'https://drive.google.com/...' },
                 { name: 'pdf_url', label: 'PDF URL', type: 'text', placeholder: 'https://...' },
                 { name: 'pdf_file', label: 'Upload PDF', type: 'file', accept: '.pdf' },
                 { name: 'cover_url', label: 'Cover Image URL', type: 'text', placeholder: 'https://...' },
@@ -736,6 +737,12 @@ window.AdminPanel = {
         if (section === 'books') {
             if (payload.pdf_url === '') delete payload.pdf_url;
             if (payload.cover_url === '') delete payload.cover_url;
+            if (payload.file_url === '') delete payload.file_url;
+            if (payload.file_url) {
+                const normalized = this.normalizeGoogleDriveDownloadLink(payload.file_url);
+                if (!normalized) return this.showMessage('error', 'Invalid Google Drive link');
+                payload.file_url = normalized;
+            }
         }
 
         if (section === 'blogs') {
@@ -816,6 +823,40 @@ window.AdminPanel = {
         const regex = /(?:youtube(?:-nocookie)?\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([A-Za-z0-9_-]{11})/;
         const match = url.match(regex);
         return match ? match[1] : null;
+    },
+
+    extractGoogleDriveFileId(url) {
+        if (!url) return null;
+        let normalized = url.trim();
+        if (!/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(normalized)) {
+            normalized = `https://${normalized}`;
+        }
+        try {
+            const parsed = new URL(normalized);
+            const hostname = parsed.hostname.toLowerCase();
+            if (!['drive.google.com', 'docs.google.com'].includes(hostname)) {
+                return null;
+            }
+            const patterns = [
+                /https?:\/\/drive\.google\.com\/file\/d\/([^\/\?]+)(?:\/view)?/i,
+                /https?:\/\/drive\.google\.com\/open\?id=([^&]+)/i,
+                /https?:\/\/drive\.google\.com\/uc\?id=([^&]+)/i,
+                /https?:\/\/docs\.google\.com\/.*\/d\/([^\/\?]+)(?:\/.*)?/i
+            ];
+            for (const pattern of patterns) {
+                const match = normalized.match(pattern);
+                if (match && match[1]) return match[1];
+            }
+            return null;
+        } catch (err) {
+            return null;
+        }
+    },
+
+    normalizeGoogleDriveDownloadLink(url) {
+        const fileId = this.extractGoogleDriveFileId(url);
+        if (!fileId) return null;
+        return `https://drive.google.com/uc?export=download&id=${encodeURIComponent(fileId)}`;
     },
 
     async uploadAsset(bucket, path, file) {
@@ -1120,6 +1161,7 @@ window.AdminPanel = {
                 { name: 'author', label: 'Author', type: 'text' },
                 { name: 'category', label: 'Category', type: 'select', options: ['MSCE Books', 'JCE Books', 'Primary Books', 'Nursing Books', 'Novels', 'Past Papers', 'Others'], required: true },
                 { name: 'description', label: 'Description', type: 'textarea' },
+                { name: 'file_url', label: 'Google Drive Link (Optional)', type: 'text', placeholder: 'https://drive.google.com/...' },
                 { name: 'pdf_url', label: 'PDF URL', type: 'text', placeholder: 'https://...' },
                 { name: 'pdf_file', label: 'Upload PDF', type: 'file', accept: '.pdf' },
                 { name: 'cover_url', label: 'Cover Image URL', type: 'text', placeholder: 'https://...' },
@@ -1831,8 +1873,18 @@ window.AdminPanel = {
         }
 
         if (section === 'books') {
+            const validCategories = ['MSCE Books', 'JCE Books', 'Primary Books', 'Nursing Books', 'Novels', 'Past Papers', 'Others'];
+            if (!payload.category || !validCategories.includes(payload.category)) {
+                return this.showMessage('error', 'Please select a valid category');
+            }
             if (payload.pdf_url === '') delete payload.pdf_url;
             if (payload.cover_url === '') delete payload.cover_url;
+            if (payload.file_url === '') delete payload.file_url;
+            if (payload.file_url) {
+                const normalized = this.normalizeGoogleDriveDownloadLink(payload.file_url);
+                if (!normalized) return this.showMessage('error', 'Invalid Google Drive link');
+                payload.file_url = normalized;
+            }
         }
 
         if (section === 'blogs') {
@@ -1864,6 +1916,10 @@ window.AdminPanel = {
         }
 
         const sanitized = this.sanitizePayload(section, payload);
+        if (section === 'books') {
+            console.log('Final books payload before insert:', sanitized);
+            console.log('Books insert payload JSON:', JSON.stringify(sanitized, null, 2));
+        }
         const operation = this.state.modalMode === 'edit'
             ? client.from(config.table).update(sanitized).eq('id', this.state.currentItem.id)
             : client.from(config.table).insert(sanitized);
@@ -1872,6 +1928,11 @@ window.AdminPanel = {
         const { error } = await operation;
         this.setLoading(false);
         if (error) {
+            console.error('Supabase save error:', error);
+            console.error('Error code:', error?.code);
+            console.error('Error message:', error?.message);
+            console.error('Error details:', error?.details);
+            console.error('Error hint:', error?.hint);
             return this.showMessage('error', `Failed to save ${config.title}.`);
         }
         this.showMessage('success', `${config.title} saved successfully.`);
@@ -1909,6 +1970,40 @@ window.AdminPanel = {
         const regex = /(?:youtube(?:-nocookie)?\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([A-Za-z0-9_-]{11})/;
         const match = url.match(regex);
         return match ? match[1] : null;
+    },
+
+    extractGoogleDriveFileId(url) {
+        if (!url) return null;
+        let normalized = url.trim();
+        if (!/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(normalized)) {
+            normalized = `https://${normalized}`;
+        }
+        try {
+            const parsed = new URL(normalized);
+            const hostname = parsed.hostname.toLowerCase();
+            if (!['drive.google.com', 'docs.google.com'].includes(hostname)) {
+                return null;
+            }
+            const patterns = [
+                /https?:\/\/drive\.google\.com\/file\/d\/([^\/\?]+)(?:\/view)?/i,
+                /https?:\/\/drive\.google\.com\/open\?id=([^&]+)/i,
+                /https?:\/\/drive\.google\.com\/uc\?id=([^&]+)/i,
+                /https?:\/\/docs\.google\.com\/.*\/d\/([^\/\?]+)(?:\/.*)?/i
+            ];
+            for (const pattern of patterns) {
+                const match = normalized.match(pattern);
+                if (match && match[1]) return match[1];
+            }
+            return null;
+        } catch (err) {
+            return null;
+        }
+    },
+
+    normalizeGoogleDriveDownloadLink(url) {
+        const fileId = this.extractGoogleDriveFileId(url);
+        if (!fileId) return null;
+        return `https://drive.google.com/uc?export=download&id=${encodeURIComponent(fileId)}`;
     },
 
     async uploadAsset(bucket, path, file) {

@@ -19,7 +19,6 @@ window.MEBV = {
         await this.checkAuthSession();
         this.handleSplashScreen();
         this.initGlobalEventListeners();
-        this.registerPWA();
         this.trackActiveUsageFeedback();
     },
 
@@ -327,20 +326,6 @@ window.MEBV = {
         }
     },
 
-    // Register Progressive Web App (PWA)
-    registerPWA() {
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js')
-                    .then(registration => {
-                        console.log('MEBV ServiceWorker registered successfully with scope: ', registration.scope);
-                    })
-                    .catch(err => {
-                        console.error('ServiceWorker registration failed: ', err);
-                    });
-            });
-        }
-    }
 };
 
 // Start Global Instance
